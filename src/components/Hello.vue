@@ -17,20 +17,13 @@
       <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
     </ul>
-    <x-button>click me!!!</x-button>  
+    <router-link to="/Home">Home</router-link>
   </div>
 </template>
 
 <script>
-import { Group, Cell, XButton } from 'vux'
-
 export default {
   name: 'hello',
-  components: {
-    Group,
-    Cell,
-    XButton
-  },
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
