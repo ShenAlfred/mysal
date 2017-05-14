@@ -15,6 +15,9 @@
         msg:'hello vue'
       }
     },
-    components:{}
+    components:{},
+    created () {
+      console.log(this.$store)
+    }
   }
 </script>
