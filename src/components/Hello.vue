@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import echarts from 'echarts'
+
 export default {
   name: 'hello',
   data () {
@@ -30,7 +32,7 @@ export default {
     }
   },
   created () {
-    console.log(this)
+    console.log(echarts)
   }
 }
 </script>
