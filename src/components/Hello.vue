@@ -18,6 +18,7 @@
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
     </ul>
     <router-link to="/Home">Home</router-link>
+    <div id="echart" style="width: 100%;height: 300px;"></div>
   </div>
 </template>
 
@@ -31,8 +32,24 @@ export default {
       msg: 'Welcome to Your Vue.js App'
     }
   },
+  mounted () {
+    var myChart = echarts.init(window.document.getElementById("echart"));
+    myChart.setOption({
+        title: { text: 'ECharts 入门示例' },
+        tooltip: {},
+        xAxis: {
+            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+        },
+        yAxis: {},
+        series: [{
+            name: '销量',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    });
+  },
   created () {
-    console.log(echarts)
+
   }
 }
 </script>
