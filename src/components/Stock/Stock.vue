@@ -5,7 +5,7 @@
           <div v-for="(stock, $index) in stocks">
             <swipeout-item transition-mode="follow">
               <div slot="right-menu">
-                <swipeout-button @click.native="goEdit(id)" type="default">编辑</swipeout-button>
+                <swipeout-button @click.native="goEdit(stock.id)" type="default">编辑</swipeout-button>
                 <swipeout-button @click.native="delStock($index)" type="warn">删除</swipeout-button>
               </div>
               <div slot="content">
