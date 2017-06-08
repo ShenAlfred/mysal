@@ -2,11 +2,11 @@
   <div style="height: 100%">
       <div class="scroll-page">
         <swipeout>
-          <div v-for="stock in stocks">
-            <swipeout-item @on-close="" @on-open="" transition-mode="follow">
+          <div v-for="(stock, $index) in stocks">
+            <swipeout-item transition-mode="follow">
               <div slot="right-menu">
-                <swipeout-button @click.native="" type="default">编辑</swipeout-button>
-                <swipeout-button @click.native="" type="warn">删除</swipeout-button>
+                <swipeout-button @click.native="goEdit(id)" type="default">编辑</swipeout-button>
+                <swipeout-button @click.native="delStock($index)" type="warn">删除</swipeout-button>
               </div>
               <div slot="content">
                 <flexbox class="stock-item vux-1px-b">
@@ -25,7 +25,7 @@
                     </p>
                   </flexbox-item>
                   <div>
-                    <x-switch title="" v-model="stock.isRemind" @on-change="isRemind(stock.isRemind, stock.id)"></x-switch>
+                    <x-switch title="" v-model="stock.isRemind" @on-change="isRemind(stock.isRemind, $index)"></x-switch>
                   </div>
                 </flexbox>
               </div>
@@ -126,8 +126,14 @@
       XSwitch
     },
     methods: {
-      isRemind (currentValue, id) {
-        this.stocks[id].isRemind = currentValue
+      isRemind (currentValue, index) {
+        this.stocks[index].isRemind = currentValue
+      },
+      goEdit (id) {
+        this.$router.push({ path: '/EA', query: { stockId: id } })
+      },
+      delStock(index) {
+        this.stocks.splice(index, 1);
       }
     },
     mounted () {
