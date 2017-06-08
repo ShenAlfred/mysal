@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
-import Home from '@/components/Home/Home.com'
+import Stock from '@/components/Stock/Stock'
+import Setting from '@/components/Stock/Setting'
+import Edit from '@/components/Stock/Edit'
 
 Vue.use(Router)
 
@@ -10,12 +11,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: 'StockMain',
+      component: Stock
     },
     {
-      path: '/Home',
-      component: Home
+      path: '/Setting',
+      name: 'StockSetting',
+      component: Setting
+    },
+    {
+      path: '/EA',
+      name: 'StockEdit',
+      component: Edit
     }
   ]
 })
