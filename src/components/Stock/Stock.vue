@@ -36,25 +36,28 @@
           点击加载更多!
         </div>
       </div>
-    <div class="control-group vux-1px-t">
-      <flexbox>
-        <flexbox-item>
-          <div class="control-btn">
-            <router-link to="/EA" class="link">
-              <i class="fa fa-plus"></i>
-              <span>新增</span>
-            </router-link>
-          </div>
-        </flexbox-item>
-        <flexbox-item>
-            <div class="control-btn">
-              <router-link to="/Setting" class="link">
-                <i class="fa fa-cog"></i>
-                <span>设置</span>
+    <div class="control-warp">
+      <div class="control-group">
+        <flexbox>
+          <flexbox-item>
+            <div class="control-btn vux-1px-r">
+              <router-link to="/EA" class="link">
+                <i class="fa fa-plus i-mc"></i>
+                <div>新增</div>
               </router-link>
             </div>
-        </flexbox-item>
-      </flexbox>
+          </flexbox-item>
+          <flexbox-item>
+            <div class="control-btn">
+              <router-link to="/Setting" class="link">
+                <i class="fa fa-cog i-mc"></i>
+                <div>设置</div>
+              </router-link>
+            </div>
+          </flexbox-item>
+        </flexbox>
+      </div>
+
     </div>
   </div>
 </template>
@@ -85,29 +88,47 @@
   }
   .scroll-page {
     height: 100%;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
     overflow-y: scroll;
   }
-  .control-group {
+  .control-warp {
     position: fixed;
     bottom: 0;
     left:0;
     width: 100%;
+    height: 60px;
+    text-align: center;
+    background: #fff;
+  }
+  .control-group {
+    margin: 0 auto 20px;
+    width: 60%;
     height: 40px;
     background: #fff;
+    border: 1px solid #eee;
+    border-radius: 40px;
+    box-shadow: 0 5px 10px #ccc;
   }
   .control-btn {
     text-align: center;
-    line-height: 40px;
+    padding: 2px 0;
+  }
+  .control-btn {
+    font-size: 14px;
+    color: #999;
   }
   .control-btn .link {
     display: block;
     color: #333;
     text-decoration: none;
   }
+  .i-mc {
+    color: #ff5454;
+  }
 </style>
 <script>
   import { Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch } from 'vux'
+  import config from '../../config'
 
   export default{
     data(){
@@ -137,6 +158,9 @@
       }
     },
     mounted () {
+      this.$ajax.get(config.baseUrl + '/spring/test').then(function(res) {
+        console.log(res)
+      })
       //模拟ajax请求数据
       this.stocks = [
         {
