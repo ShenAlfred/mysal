@@ -43,9 +43,6 @@
 <script>
   import { Loading,XInput,XSwitch,XButton,Alert,Confirm,TransferDomDirective as TransferDom } from 'vux'
   import Toast from '@/components/custom/toast.com'
-  import Vue from 'vue'
-  import { ConfirmPlugin } from 'vux'
-  Vue.use(ConfirmPlugin)
 
   export default{
     data(){
@@ -89,6 +86,9 @@
           this.showTips = true;
         }, 5000);
       }
+    },
+    mounted () {
+      console.log(this.$route.query.stockId)
     },
     directives: {
       TransferDom

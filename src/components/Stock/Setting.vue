@@ -1,17 +1,30 @@
 <template>
   <div>
-    <h1>Setting</h1>
+    <x-input type="number" placeholder="提醒次数">
+      <div slot="label" class="custom-label">提醒次数:</div>
+    </x-input>
   </div>
 </template>
 <style>
 </style>
 <script>
+  import { Loading,XInput,XButton,Alert,Confirm,TransferDomDirective as TransferDom } from 'vux'
+
   export default{
     data(){
       return{
         msg:'hello vue'
       }
     },
-    components:{}
+    directives: {
+      TransferDom
+    },
+    components:{
+      Loading,
+      XInput,
+      XButton,
+      Alert,
+      Confirm
+    }
   }
 </script>
