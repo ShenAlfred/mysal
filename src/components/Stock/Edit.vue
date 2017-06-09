@@ -18,8 +18,9 @@
       <confirm v-model="confirmSaveData.confirmIsShow" :title="confirmSaveData.title" @on-confirm="saveConfirm()">
         <p style="text-align:center;">确定保存吗?</p>
       </confirm>
+      <loading v-model="showLoading"></loading>
     </div>
-    <toast tip-text="股票代码不能为空" v-model="show" close-time="5"></toast>
+    <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
   </div>
 </template>
 <style>
@@ -40,7 +41,7 @@
   }
 </style>
 <script>
-  import { XInput,XSwitch,XButton,Alert,Confirm,TransferDomDirective as TransferDom } from 'vux'
+  import { Loading,XInput,XSwitch,XButton,Alert,Confirm,TransferDomDirective as TransferDom } from 'vux'
   import Toast from '@/components/custom/toast.com'
   import Vue from 'vue'
   import { ConfirmPlugin } from 'vux'
@@ -49,7 +50,9 @@
   export default{
     data(){
       return{
-        show: false,
+        showTips: false,
+        tipsText: "",
+        showLoading: false,
         stockData: {
           stockNumber: '',
           upLimit: '',
@@ -58,17 +61,33 @@
         },
         confirmSaveData: {
           title: '保存股票',
-          confirmIsShow: false,
+          confirmIsShow: false
         }
       }
     },
     methods: {
       save () {
-        this.show = true;
-        //this.confirmSaveData.confirmIsShow = true;
+        if(this.stockData.stockNumber == "") {
+          this.tipsText = "股票代码不能为空!"
+          this.showTips = true;
+        }else if(this.stockData.upLimit == "") {
+          this.tipsText = "波动上限不能为空!"
+          this.showTips = true;
+        }else if(this.stockData.downLimit == "") {
+          this.tipsText = "波动下限不能为空!"
+          this.showTips = true;
+        }else {
+          this.confirmSaveData.confirmIsShow = true;
+        }
       },
       saveConfirm () {
         var that = this;
+        this.showLoading = true;
+        setTimeout(() => {
+          this.showLoading = false;
+          this.tipsText = "保存成功!"
+          this.showTips = true;
+        }, 5000);
       }
     },
     directives: {
@@ -80,7 +99,8 @@
       XButton,
       Confirm,
       Alert,
-      Toast
+      Toast,
+      Loading
     }
   }
 </script>
