@@ -1,30 +1,24 @@
 <template>
   <div>
-    <x-input type="number" placeholder="提醒次数">
-      <div slot="label" class="custom-label">提醒次数:</div>
-    </x-input>
+    <popup-picker title="提醒次数" :data=notifyNumber v-model="notifyValue"></popup-picker>
   </div>
 </template>
 <style>
 </style>
 <script>
-  import { Loading,XInput,XButton,Alert,Confirm,TransferDomDirective as TransferDom } from 'vux'
+  import { PopupPicker, Cell, Picker } from 'vux'
 
   export default{
     data(){
       return{
-        msg:'hello vue'
+        notifyValue: [1],
+        notifyNumber: [[1, 2, 3, 4, 5]]
       }
     },
-    directives: {
-      TransferDom
-    },
     components:{
-      Loading,
-      XInput,
-      XButton,
-      Alert,
-      Confirm
+       PopupPicker,
+       Cell,
+       Picker
     }
   }
 </script>

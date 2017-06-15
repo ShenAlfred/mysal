@@ -10,6 +10,7 @@
       <div slot="label" class="custom-label"><b>*</b>波动下限:</div>
     </x-input>
     <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
+
     <div class="fixed-bottom">
       <x-button type="warn" @click.native="save()">保存</x-button>
     </div>
@@ -20,7 +21,7 @@
       </confirm>
       <loading v-model="showLoading"></loading>
     </div>
-    <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
+    <toast :tip-text="tipsText" v-model="showTips" close-time="5" @input="getInput"></toast>
   </div>
 </template>
 <style>
@@ -63,6 +64,9 @@
       }
     },
     methods: {
+      getInput () {
+        console.log(arguments)
+      },
       save () {
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!"
