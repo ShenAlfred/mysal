@@ -6,35 +6,39 @@
             <swipeout-item transition-mode="follow">
               <div slot="right-menu">
                 <swipeout-button @click.native="goEdit(stock.id)" type="default">编辑</swipeout-button>
-                <swipeout-button @click.native="delStock($index)" type="warn">删除</swipeout-button>
+                <swipeout-button @click.native="delStock($index, stock.id)" type="warn" v-if="stock.fixed == 0">删除</swipeout-button>
               </div>
               <div slot="content">
                 <flexbox class="stock-item vux-1px-b">
                   <flexbox-item>
                     <p class="s_up">
                       <span class="s_c">{{ stock.name }}</span>
-                      <span class="d_c">({{ stock.number }})</span>
+                      <span class="d_c">({{ stock.code }})</span>
                     </p>
                     <p class="s_down">
                     <span>
-                      上限: {{ stock.upLimit }}
+                      上限: {{ stock.maxP == null ? '--' :  stock.maxP }}
                     </span>
                       <span>
-                      下限: {{ stock.downLimit }}
+                      下限: {{ stock.minP == null ? '--' :  stock.minP }}
                     </span>
                     </p>
                   </flexbox-item>
                   <div>
-                    <x-switch title="" v-model="stock.isRemind" @on-change="isRemind(stock.isRemind, $index)"></x-switch>
+                    <x-switch title="" v-model="stock.remind" @on-change="isRemind(stock.remind, $index, stock.id)"></x-switch>
                   </div>
                 </flexbox>
               </div>
             </swipeout-item>
           </div>
         </swipeout>
-        <div class="load-more">
-          点击加载更多!
+        <div class="no-content" v-if="stocks.length == 0">
+          没有您要关注的股票,<br />
+          请点击新增您的股票！！
         </div>
+        <!--<div class="load-more" @native.click>-->
+          <!--点击加载更多!-->
+        <!--</div>-->
       </div>
     <div class="control-warp">
       <div class="control-group">
@@ -57,11 +61,10 @@
           </flexbox-item>
         </flexbox>
       </div>
-
     </div>
   </div>
 </template>
-<style lang="less">
+<style lang="less" scoped>
   @import '~vux/src/styles/1px.less';
   .stock-item {
     padding: 10px 15px;
@@ -125,15 +128,21 @@
   .i-mc {
     color: #ff5454;
   }
+  .no-content {
+    padding: 20px 0;
+    text-align: center;
+    line-height: 1.5;
+  }
 </style>
 <script>
   import { Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch } from 'vux'
   import config from '../../config'
+  import api from '../../api'
+  import store from '../../store'
 
   export default{
     data(){
       return{
-        msg:'hello vue',
         stocks: []
       }
     },
@@ -147,47 +156,39 @@
       XSwitch
     },
     methods: {
-      isRemind (currentValue, index) {
-        this.stocks[index].isRemind = currentValue
+      isRemind (currentValue, index, _id) {
+        this.stocks[index].isRemind = currentValue;
+        this.$ajax.get(config.baseUrl + api.remindStock, {
+          params: {
+            id: _id,
+            remind: currentValue
+          }
+        }).then(function(result) {
+        });
       },
       goEdit (id) {
         this.$router.push({ path: '/EA', query: { stockId: id } })
       },
-      delStock(index) {
-        this.stocks.splice(index, 1);
+      delStock(index, _id) {
+        const that = this;
+        this.$ajax.get(config.baseUrl + api.delStock, {
+          params: {
+            id: _id
+          }
+        }).then(function(result) {
+          if(result.data.code === "0") {
+            that.stocks.splice(index, 1);
+          }
+        });
       }
     },
     mounted () {
-      this.$ajax.get(config.baseUrl + '/spring/test').then(function(res) {
-        console.log(res)
-      })
-      //模拟ajax请求数据
-      this.stocks = [
-        {
-          id: 0,
-          name: '上汽集团',
-          number: '600104',
-          upLimit: 5.5,
-          downLimit: 2.3,
-          isRemind: true
-        },
-        {
-          id: 1,
-          name: '城市传媒',
-          number: '600229',
-          upLimit: 3.5,
-          downLimit: 1.3,
-          isRemind: true
-        },
-        {
-          id: 2,
-          name: '欧派家居',
-          number: '603833',
-          upLimit: 10,
-          downLimit: 7.2,
-          isRemind: false
+      const that = this;
+      this.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
+        if(result.data.code === "0") {
+          that.stocks = result.data.data;
         }
-      ]
+      });
     }
   }
 </script>

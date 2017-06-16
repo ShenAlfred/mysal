@@ -1,8 +1,22 @@
 <template>
   <div>
-    <x-input type="number" placeholder="请输入股票代码" v-model="stockData.stockNumber">
-      <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
-    </x-input>
+    <div class="stock-code">
+      <x-input type="number" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
+               :debounce="100" :disabled="isEdit"
+               @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
+        <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
+      </x-input>
+      <div class="stock-list" v-show="stockData.stockNumber && !isSelected">
+        <div class="stock-tips">请选择一个股票:</div>
+        <div class="stock-item" v-for="(stock, $index) in searchStocks">
+          <div @click="selectStock(stock.code, stock.corpId)">
+            <div class="stock-code-col stock-col">
+              {{stock.name}}({{stock.code}})
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
       <div slot="label" class="custom-label"><b>*</b>波动上限:</div>
     </x-input>
@@ -18,12 +32,48 @@
       <confirm v-model="confirmSaveData.confirmIsShow" :title="confirmSaveData.title" @on-confirm="saveConfirm()">
         <p style="text-align:center;">确定保存吗?</p>
       </confirm>
-      <loading v-model="showLoading"></loading>
+      <loading v-model="showLoading" :text="loadText"></loading>
     </div>
     <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
   </div>
 </template>
-<style>
+<style scoped>
+  .stock-undata {
+    color: #666;
+    font-size: 14px;
+    padding: 5px 0;
+    text-align: center;
+  }
+  .stock-col {
+    float: left;
+    padding-left: 5px;
+  }
+  .stock-tips {
+    position: relative;
+    font-size: 12px;
+    color: #fd6d6d;
+    margin-bottom: 5px;
+  }
+  .stock-list {
+    background: #fff;
+    padding: 0 5px 0 15px;
+    text-align: left;
+  }
+  .stock-item {
+    border-left: 2px solid #ff5454;
+    padding: 5px 0;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #666;
+  }
+  .stock-item:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+  .stock-code {
+    position: relative;
+  }
   .custom-label {
     padding-right: 15px;
   }
@@ -41,17 +91,30 @@
   }
 </style>
 <script>
-  import { Loading,XInput,XSwitch,XButton,Alert,Confirm,TransferDomDirective as TransferDom } from 'vux'
+  import { Loading,XInput,XSwitch,XButton,Alert,Confirm,Flexbox,FlexboxItem,TransferDomDirective as TransferDom } from 'vux'
   import Toast from '@/components/custom/toast.com'
+  import config from '../../config'
+  import api from '../../api'
 
   export default{
     data(){
       return{
+        searchStocks: [],
+        isSelected: false,     //是否选择股票了
         showTips: false,
         tipsText: "",
+        loadText: "处理中...",
         showLoading: false,
+        query: {              //提交参数
+          id: '',
+          maxP: '',
+          minP: '',
+          remind: ''
+        },
+        isEdit: false,        //是否是编辑页面
         stockData: {
           stockNumber: '',
+          query_StockId: '',
           upLimit: '',
           downLimit: '',
           isRemind: true
@@ -63,6 +126,32 @@
       }
     },
     methods: {
+      selectStock (_code, _id) {
+        this.stockData.stockNumber = _code;
+        this.stockData.query_StockId = _id;
+        this.searchStocks = [];
+        this.isSelected = true;
+      },
+      stockFocus () {
+        this.isSelected = false;
+      },
+      getStockList (_code) {
+        const that = this;
+        if(this.stockData.stockNumber != "") {
+          if(!this.isSelected) {
+            this.$ajax.get(config.baseUrl + api.getStockList, {
+              params: {
+                code: _code
+              }
+            }).then(function(result) {
+              that.searchStocks = result.data.data;
+            });
+          }
+        }
+        else {
+          that.searchStocks = []
+        }
+      },
       save () {
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!"
@@ -73,22 +162,70 @@
         }else if(this.stockData.downLimit == "") {
           this.tipsText = "波动下限不能为空!"
           this.showTips = true;
-        }else {
+        }else if(this.stockData.upLimit < this.stockData.downLimit){
+          this.tipsText = "下限值不能大于上限值"
+          this.showTips = true;
+        }
+        else {
           this.confirmSaveData.confirmIsShow = true;
         }
       },
       saveConfirm () {
         var that = this;
         this.showLoading = true;
-        setTimeout(() => {
-          this.showLoading = false;
-          this.tipsText = "保存成功!"
-          this.showTips = true;
-        }, 5000);
+        this.query["maxP"] =  this.stockData.upLimit;
+        this.query["minP"] =  this.stockData.downLimit;
+        this.query["remind"] =  this.stockData.isRemind;
+        if(this.isEdit) {
+          this.$ajax.get(config.baseUrl + api.editStock, {
+            params: {
+              id: that.query.id,
+              maxP: that.query.maxP,
+              minP: that.query.minP,
+              remind: that.query.remind
+            }
+           }).then(function(result) {
+              that.showLoading = false;
+              that.tipsText = result.data.msg;
+              that.showTips = true;
+           });
+        }else {
+        this.query["id"] =  this.stockData.query_StockId;
+        this.$ajax.get(config.baseUrl + api.addStock, {
+          params: {
+            corpId: that.query.id,
+            maxP: that.query.maxP,
+            minP: that.query.minP,
+            remind: that.query.remind
+          }
+         }).then(function(result) {
+            that.showLoading = false;
+            that.tipsText = result.data.msg;
+            that.showTips = true;
+         });
+        }
       }
     },
     mounted () {
-      console.log(this.$route.query.stockId)
+      const stockId = this.$route.query.stockId;
+      const that = this;
+      if(stockId >=0) {
+        this.isEdit = true;
+        this.$ajax.get(config.baseUrl + api.getStockInfo, {
+          params: {
+            id: stockId
+          }
+        }).then(function(result) {
+          var result = result.data.data;
+          that.stockData.stockNumber = result.code;
+          that.stockData.upLimit = result.maxP;
+          that.stockData.downLimit = result.minP;
+          that.isSelected = true;
+          that.query["id"] = result.id;
+        });
+      }else {
+        this.isEdit = false;
+      }
     },
     directives: {
       TransferDom

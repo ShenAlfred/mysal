@@ -13,6 +13,7 @@
   export default{
     data(){
       return{
+        show: true,
         msg:'hello vue'
       }
     },
@@ -25,6 +26,8 @@
       XButton,
       Alert,
       Confirm
+    },
+    methods: {
     }
   }
 </script>

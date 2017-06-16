@@ -6,8 +6,10 @@ import axios from 'axios'
 import router from './router'
 import store from './store'
 
-Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
+
+//COOKIE凭据
+axios.defaults.withCredentials = true
 
 /* eslint-disable no-new */
 new Vue({

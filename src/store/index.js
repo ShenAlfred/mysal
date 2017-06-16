@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    userInfo: {}                //存储用户信息方便各模块调用
   },
   mutations: {
     increment (state) {
