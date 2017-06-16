@@ -6,13 +6,23 @@
                @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
         <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
       </x-input>
-      <div class="stock-list" v-show="stockData.stockNumber && !isSelected">
-        <div class="stock-tips">请选择一个股票:</div>
-        <div class="stock-item" v-for="(stock, $index) in searchStocks">
-          <div @click="selectStock(stock.code, stock.corpId)">
-            <div class="stock-code-col stock-col">
-              {{stock.name}}({{stock.code}})
+      <div class="stock-list">
+        <div class="ac loading-text" v-show="!isGetData && stockData.stockNumber">
+          <inline-loading></inline-loading><span>加载中...</span>
+        </div>
+        <div v-show="searchStocks.length && isGetData">
+          <div class="stock-tips">请选择一个股票:</div>
+          <div class="stock-item" v-for="(stock, $index) in searchStocks">
+            <div @click="selectStock(stock.code, stock.corpId)">
+              <div class="stock-code-col stock-col">
+                {{stock.name}}({{stock.code}})
+              </div>
             </div>
+          </div>
+        </div>
+        <div v-show="searchStocks.length == 0 && stockData.stockNumber != '' && !isSelected && isGetData ">
+          <div class="stock-undata">
+            没有你要查询的股票~~~
           </div>
         </div>
       </div>
@@ -38,6 +48,9 @@
   </div>
 </template>
 <style scoped>
+  .loading-text {
+    font-size: 12px;
+  }
   .stock-undata {
     color: #666;
     font-size: 14px;
@@ -91,7 +104,7 @@
   }
 </style>
 <script>
-  import { Loading,XInput,XSwitch,XButton,Alert,Confirm,Flexbox,FlexboxItem,TransferDomDirective as TransferDom } from 'vux'
+  import { InlineLoading,Loading,XInput,XSwitch,XButton,Alert,Confirm,Flexbox,FlexboxItem,TransferDomDirective as TransferDom } from 'vux'
   import Toast from '@/components/custom/toast.com'
   import config from '../../config'
   import api from '../../api'
@@ -101,6 +114,7 @@
       return{
         searchStocks: [],
         isSelected: false,     //是否选择股票了
+        isGetData: false,
         showTips: false,
         tipsText: "",
         loadText: "处理中...",
@@ -134,8 +148,13 @@
       },
       stockFocus () {
         this.isSelected = false;
+        this._getStockList(this.stockData.stockNumber);
       },
       getStockList (_code) {
+        const that = this;
+        this._getStockList(_code);
+      },
+      _getStockList (_code) {
         const that = this;
         if(this.stockData.stockNumber != "") {
           if(!this.isSelected) {
@@ -144,11 +163,12 @@
                 code: _code
               }
             }).then(function(result) {
+              that.isGetData = true;
               that.searchStocks = result.data.data;
             });
           }
-        }
-        else {
+        }else {
+          that.isGetData = false;
           that.searchStocks = []
         }
       },
@@ -237,7 +257,8 @@
       Confirm,
       Alert,
       Toast,
-      Loading
+      Loading,
+      InlineLoading
     }
   }
 </script>

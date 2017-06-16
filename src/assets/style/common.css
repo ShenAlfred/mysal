@@ -477,3 +477,7 @@ time, mark, audio, video {
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
+.ac {
+  text-align: center;
+}

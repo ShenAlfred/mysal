@@ -2,16 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e78f428-f8ad-47d4-bcda-8031867a6023" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/api.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/App.vue" afterPath="$PROJECT_DIR$/src/App.vue" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/assets/style/common.css" afterPath="$PROJECT_DIR$/src/assets/style/common.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/Stock/Edit.vue" afterPath="$PROJECT_DIR$/src/components/Stock/Edit.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/Stock/Setting.vue" afterPath="$PROJECT_DIR$/src/components/Stock/Setting.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/Stock/Stock.vue" afterPath="$PROJECT_DIR$/src/components/Stock/Stock.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.js" afterPath="$PROJECT_DIR$/src/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/store/index.js" afterPath="$PROJECT_DIR$/src/store/index.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -29,21 +22,31 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Stock.vue" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Stock.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/Stock/Stock.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="178" column="40" lean-forward="true" selection-start-line="178" selection-start-column="40" selection-end-line="178" selection-end-column="40" />
+            <state relative-caret-position="387">
+              <caret line="180" column="11" lean-forward="true" selection-start-line="180" selection-start-column="11" selection-end-line="180" selection-end-column="11" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Edit.vue" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Edit.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/Stock/Edit.vue">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="209">
-              <caret line="188" column="44" lean-forward="false" selection-start-line="188" selection-start-column="44" selection-end-line="188" selection-end-column="44" />
+              <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="common.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/assets/style/common.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="485">
+              <caret line="481" column="21" lean-forward="false" selection-start-line="481" selection-start-column="21" selection-end-line="481" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -112,7 +115,6 @@
         <option value="$PROJECT_DIR$/src/assets/style/myanimate.scss" />
         <option value="$PROJECT_DIR$/src/components/custom/toast.com.vue" />
         <option value="$PROJECT_DIR$/src/router/index.js" />
-        <option value="$PROJECT_DIR$/src/assets/style/common.css" />
         <option value="$PROJECT_DIR$/src/components/Stock/Setting.vue" />
         <option value="$PROJECT_DIR$/src/yunapi.js" />
         <option value="$PROJECT_DIR$/src/main.js" />
@@ -122,6 +124,7 @@
         <option value="$PROJECT_DIR$/src/api.js" />
         <option value="$PROJECT_DIR$/src/App.vue" />
         <option value="$PROJECT_DIR$/src/components/Stock/Stock.vue" />
+        <option value="$PROJECT_DIR$/src/assets/style/common.css" />
         <option value="$PROJECT_DIR$/src/components/Stock/Edit.vue" />
       </list>
     </option>
@@ -221,6 +224,46 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mysal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mysal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mysal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mysal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="style" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -325,12 +368,12 @@
       <workItem from="1496885975087" duration="18282000" />
       <workItem from="1496909289615" duration="6253000" />
       <workItem from="1496973898573" duration="20666000" />
-      <workItem from="1497577148041" duration="28755000" />
+      <workItem from="1497577148041" duration="31175000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="127285000" />
+    <option name="totallyTimeSpent" value="129705000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -573,14 +616,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/assets/style/common.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="477" column="2" lean-forward="false" selection-start-line="477" selection-start-column="2" selection-end-line="477" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/router/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -673,6 +708,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/Stock/Stock.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="180" column="11" lean-forward="true" selection-start-line="180" selection-start-column="11" selection-end-line="180" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/assets/style/common.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="481" column="21" lean-forward="false" selection-start-line="481" selection-start-column="21" selection-end-line="481" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/api.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
@@ -686,15 +737,7 @@
     <entry file="file://$PROJECT_DIR$/src/components/Stock/Edit.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
-          <caret line="188" column="44" lean-forward="false" selection-start-line="188" selection-start-column="44" selection-end-line="188" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/Stock/Stock.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="178" column="40" lean-forward="true" selection-start-line="178" selection-start-column="40" selection-end-line="178" selection-end-column="40" />
+          <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
           <folding />
         </state>
       </provider>
