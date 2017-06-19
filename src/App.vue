@@ -10,27 +10,7 @@ import api from './api'
 import store from './store'
 
 export default {
-  name: 'app',
-  mounted () {
-    const that = this;
-    const query = {
-      ticket: this.$route.query.ticket
-    }
-    this.$ajax.get(config.baseUrl + "/stock/test", {
-      params: {
-        ticket: query.ticket
-      }
-    }).then(function(result) {
-      if(result.data.code == 0) {
-        that.$ajax.get(config.baseUrl + api.getUserInfo, {
-        }).then(function(result) {
-          if(result.data.code === "0") {
-            store.state.userInfo = result.data.data
-          }
-        });
-      }
-    });
-  }
+  name: 'app'
 }
 </script>
 

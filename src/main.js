@@ -5,6 +5,8 @@ import App from './App'
 import axios from 'axios'
 import router from './router'
 import store from './store'
+import config from './config'
+import api from './api'
 
 Vue.prototype.$ajax = axios
 
@@ -43,5 +45,8 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  beforeCreate () {
+
+  }
 })

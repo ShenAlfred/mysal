@@ -184,9 +184,26 @@
     },
     mounted () {
       const that = this;
-      this.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
-        if(result.data.code === "0") {
-          that.stocks = result.data.data;
+      const query = {
+        ticket: this.$route.query.ticket
+      }
+      this.$ajax.get(config.baseUrl + "/stock/test", {
+        params: {
+          ticket: query.ticket
+        }
+      }).then(function(result) {
+        if(result.data.code == 0) {
+          that.$ajax.get(config.baseUrl + api.getUserInfo, {
+          }).then(function(result) {
+            if(result.data.code === "0") {
+              store.state.userInfo = result.data.data
+              that.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
+                if(result.data.code === "0") {
+                  that.stocks = result.data.data;
+                }
+              });
+            }
+          });
         }
       });
     }
