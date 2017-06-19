@@ -13,7 +13,6 @@ import qingApi from './yunapi'
 export default {
   name: 'app',
   mounted () {
-    qingApi.setTitle("股票");
     const that = this;
     const query = {
       ticket: this.$route.query.ticket

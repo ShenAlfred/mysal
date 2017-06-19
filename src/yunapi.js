@@ -30,9 +30,21 @@ const qingApi = {
     XuntongJSBridge.call('showOptionMenu')
   },
   setTitle (value) {
-    XuntongJSBridge.call('setWebViewTitle', {
-      title: value
-    })
+    document.title = value;
+    const mobile = navigator.userAgent.toLocaleLowerCase();
+    const length = document.querySelectorAll('iframe').length;
+    if(/iphone|ipad|ipod/.test(mobile) && !length) {
+      const iframe = document.createElement('iframe');
+      iframe.style.cssText = 'display: none; width: 0; height: 0';
+      iframe.setAttribute('src', 'about:blank');
+      iframe.addEventListener('load', () => {
+        setTimeout(() => {
+          iframe.removeEventListener('load', false);
+          document.body.removeChild(iframe);
+        }, 0);
+      });
+      document.body.appendChild(iframe);
+    }
   }
 }
 
