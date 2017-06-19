@@ -11,14 +11,14 @@ import store from './store'
 
 export default {
   name: 'app',
-  beforeCreate () {
+  mounted () {
     const that = this;
     const query = {
       ticket: this.$route.query.ticket
     }
     this.$ajax.get(config.baseUrl + "/stock/test", {
       params: {
-        ticket: query.ticket || "5c5045ca67d17a392861b2beb31286ab"
+        ticket: query.ticket
       }
     }).then(function(result) {
       if(result.data.code == 0) {
