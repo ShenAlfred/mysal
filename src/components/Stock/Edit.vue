@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-h5-title="$route.meta.title">
     <div class="stock-code">
       <x-input type="number" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
                :debounce="100" :disabled="isEdit"
@@ -108,7 +108,6 @@
   import Toast from '@/components/custom/toast.com'
   import config from '../../config'
   import api from '../../api'
-  import qingApi from '../../yunapi'
 
   export default{
     data(){
@@ -231,7 +230,6 @@
       const stockId = this.$route.query.stockId;
       const that = this;
       if(stockId >=0) {
-        qingApi.setTitle("编辑")
         this.isEdit = true;
         this.$ajax.get(config.baseUrl + api.getStockInfo, {
           params: {
@@ -247,7 +245,6 @@
           that.query["id"] = result.id;
         });
       }else {
-        qingApi.setTitle("新增")
         this.isEdit = false;
       }
     },

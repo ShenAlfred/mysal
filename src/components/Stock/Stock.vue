@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%" v-h5-title="$route.meta.title">
       <div class="scroll-page">
         <swipeout>
           <div v-for="(stock, $index) in stocks">
