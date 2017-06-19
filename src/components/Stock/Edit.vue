@@ -240,6 +240,7 @@
           that.stockData.stockNumber = result.code;
           that.stockData.upLimit = result.maxP;
           that.stockData.downLimit = result.minP;
+          that.stockData.isRemind = result.remind;
           that.isSelected = true;
           that.query["id"] = result.id;
         });
