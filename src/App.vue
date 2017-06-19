@@ -18,7 +18,7 @@ export default {
     }
     this.$ajax.get(config.baseUrl + "/stock/test", {
       params: {
-        ticket: "5c5045ca67d17a392861b2beb31286ab"
+        ticket: query.ticket || "5c5045ca67d17a392861b2beb31286ab"
       }
     }).then(function(result) {
       if(result.data.code == 0) {

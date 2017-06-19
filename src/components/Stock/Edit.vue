@@ -247,6 +247,11 @@
         this.isEdit = false;
       }
     },
+    updated () {
+      if(this.isEdit) {             //判断编辑页面默认已取到数据 不显示loading
+        this.isGetData = true;
+      }
+    },
     directives: {
       TransferDom
     },
