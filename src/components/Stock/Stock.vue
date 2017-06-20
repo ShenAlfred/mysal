@@ -1,45 +1,45 @@
 <template>
   <div style="height: 100%" v-h5-title="$route.meta.title">
     <div class="scroll-page">
-        <loading v-model="isLoading"></loading>
-        <div v-if="getData">
-          <swipeout>
-          <div v-for="(stock, $index) in stocks">
-            <swipeout-item transition-mode="follow">
-              <div slot="right-menu">
-                <swipeout-button @click.native="goEdit(stock.id)" type="default">编辑</swipeout-button>
-                <swipeout-button @click.native="delStock($index, stock.id)" type="warn" v-if="stock.fixed == 0">删除</swipeout-button>
-              </div>
-              <div slot="content">
-                <flexbox class="stock-item vux-1px-b">
-                  <flexbox-item>
-                    <p class="s_up">
-                      <span class="s_c">{{ stock.name }}</span>
-                      <span class="d_c">({{ stock.code }})</span>
-                    </p>
-                    <p class="s_down">
+      <loading v-model="isLoading"></loading>
+      <div v-if="getData">
+        <swipeout>
+        <div v-for="(stock, $index) in stocks">
+          <swipeout-item transition-mode="follow">
+            <div slot="right-menu">
+              <swipeout-button @click.native="goEdit(stock.id)" type="default">编辑</swipeout-button>
+              <swipeout-button @click.native="delStock($index, stock.id)" type="warn" v-if="stock.fixed == 0">删除</swipeout-button>
+            </div>
+            <div slot="content">
+              <flexbox class="stock-item vux-1px-b">
+                <flexbox-item>
+                  <p class="s_up">
+                    <span class="s_c">{{ stock.name }}</span>
+                    <span class="d_c">({{ stock.code }})</span>
+                  </p>
+                  <p class="s_down">
+                  <span>
+                    上限: {{ stock.maxP == null ? '--' :  stock.maxP }}
+                  </span>
                     <span>
-                      上限: {{ stock.maxP == null ? '--' :  stock.maxP }}
-                    </span>
-                      <span>
-                      下限: {{ stock.minP == null ? '--' :  stock.minP }}
-                    </span>
-                    </p>
-                  </flexbox-item>
-                  <div>
-                    <x-switch title="" v-model="stock.remind" @on-change="isRemind(stock.remind, $index, stock.id)"></x-switch>
-                  </div>
-                </flexbox>
-              </div>
-            </swipeout-item>
-          </div>
-        </swipeout>
+                    下限: {{ stock.minP == null ? '--' :  stock.minP }}
+                  </span>
+                  </p>
+                </flexbox-item>
+                <div>
+                  <x-switch title="" v-model="stock.remind" @on-change="isRemind(stock.remind, $index, stock.id)"></x-switch>
+                </div>
+              </flexbox>
+            </div>
+          </swipeout-item>
         </div>
-        <div class="no-content" v-if="error">
-          没有您要关注的股票,<br />
-          请点击新增您的股票！！
-        </div>
+      </swipeout>
       </div>
+      <div class="no-content" v-if="error">
+        没有您要关注的股票,<br />
+        请点击新增您的股票！！
+      </div>
+    </div>
     <div class="control-warp">
       <div class="control-group">
         <flexbox>
@@ -183,9 +183,11 @@
         that.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
           that.isLoading = false;
           if(result.data.code === "0") {
-              that.stocks = result.data.data;
-              that.getData = true;
               that.error = false;
+              setTimeout(function() {
+                that.stocks = result.data.data;
+                that.getData = true;
+              }, 500);
           }
         });
       }

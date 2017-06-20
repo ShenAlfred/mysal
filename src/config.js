@@ -3,7 +3,8 @@
  */
 
 const config = {
-  baseUrl: process.env.NODE_ENV === 'development' ? 'http://10.52.30.155:8080' : 'http://10.52.30.155:8080'                  //生产环境待确认
+  baseUrl: process.env.NODE_ENV === 'development' ? 'http://10.52.30.155:8080' : 'http://10.52.30.155:8080',                  //生产环境待确认
+  isDevEnv: process.env.NODE_ENV === 'development' ? true : false
 };
 
 export default config
