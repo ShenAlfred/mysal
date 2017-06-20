@@ -234,7 +234,7 @@
       }
     },
     mounted () {
-      const stockId = this.$route.query.stockId;
+      const stockId = this.$route.params.stockId;
       const that = this;
       if(stockId >=0) {
         this.isEdit = true;

@@ -163,7 +163,7 @@
         });
       },
       goEdit (id) {
-        this.$router.push({ path: '/EA', query: { stockId: id } })
+        this.$router.push({ name: 'StockEdit', params: { stockId: id } })
       },
       delStock(index, _id) {
         const that = this;
