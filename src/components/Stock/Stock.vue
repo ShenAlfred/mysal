@@ -1,7 +1,8 @@
 <template>
   <div style="height: 100%" v-h5-title="$route.meta.title">
-      <div class="scroll-page">
-        <div v-if="isGetData">
+    <div class="scroll-page">
+        <loading v-model="isLoading"></loading>
+        <div v-if="getData">
           <swipeout>
           <div v-for="(stock, $index) in stocks">
             <swipeout-item transition-mode="follow">
@@ -34,7 +35,7 @@
           </div>
         </swipeout>
         </div>
-        <div class="no-content" v-if="!isGetData">
+        <div class="no-content" v-if="error">
           没有您要关注的股票,<br />
           请点击新增您的股票！！
         </div>
@@ -43,7 +44,7 @@
       <div class="control-group">
         <flexbox>
           <flexbox-item>
-            <div class="control-btn vux-1px-r">
+            <div class="control-btn">
               <router-link to="/EA" class="link">
                 <i class="fa fa-plus i-mc"></i>
                 <div>新增</div>
@@ -126,7 +127,7 @@
   }
 </style>
 <script>
-  import { Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch } from 'vux'
+  import { Loading , Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch } from 'vux'
   import config from '../../config'
   import api from '../../api'
   import store from '../../store'
@@ -134,8 +135,10 @@
   export default{
     data(){
       return{
-        stocks: [],
-        isGetData: false
+        stocks: [],           //存放股票数据列表数组
+        isLoading: false,   //显示loading
+        getData: null,     //获取到数据
+        error: null       //没有获取到数据
       }
     },
     components:{
@@ -145,7 +148,8 @@
       XButton,
       Flexbox,
       FlexboxItem,
-      XSwitch
+      XSwitch,
+      Loading
     },
     methods: {
       isRemind (currentValue, index, _id) {
@@ -172,16 +176,22 @@
             that.stocks.splice(index, 1);
           }
         });
+      },
+      fetchData() {
+        const that = this;
+        this.isLoading = true;
+        that.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
+          that.isLoading = false;
+          if(result.data.code === "0") {
+              that.stocks = result.data.data;
+              that.getData = true;
+              that.error = false;
+          }
+        });
       }
     },
-    mounted () {
-      const that = this;
-      this.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
-        if(result.data.code === "0") {
-          that.stocks = result.data.data;
-          that.isGetData = true;
-        }
-      });
+    created () {
+      this.fetchData();
     }
   }
 </script>
