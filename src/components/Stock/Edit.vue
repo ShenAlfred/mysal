@@ -13,11 +13,9 @@
         <div v-show="searchStocks.length && isGetData">
           <div class="stock-tips">请选择一个股票:</div>
           <div class="stock-item" v-for="(stock, $index) in searchStocks">
-            <div @click="selectStock(stock.code, stock.corpId)">
-              <div class="stock-code-col stock-col">
+            <a href="javascript:;" @click="selectStock(stock.code, stock.corpId)">
                 {{stock.name}}({{stock.code}})
-              </div>
-            </div>
+            </a>
           </div>
         </div>
         <div v-show="searchStocks.length == 0 && stockData.stockNumber != '' && !isSelected && isGetData ">
@@ -74,10 +72,19 @@
   }
   .stock-item {
     border-left: 2px solid #ff5454;
-    padding: 5px 0;
     margin-bottom: 5px;
     font-size: 14px;
     color: #666;
+  }
+  .stock-item a {
+    display: block;
+    text-decoration: none;
+    padding: 5px 10px;
+    color: #666;
+  }
+  .stock-item a:active {
+    color: #fff;
+    background: #E64340;
   }
   .stock-item:after {
     content: '';

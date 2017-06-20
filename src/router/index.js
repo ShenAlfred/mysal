@@ -4,6 +4,7 @@ import Stock from '@/components/Stock/Stock'
 import Setting from '@/components/Stock/Setting'
 import Edit from '@/components/Stock/Edit'
 import HeyMain from '@/components/HeyMain'
+import config from '@/config'
 
 Vue.use(Router)
 
@@ -11,7 +12,14 @@ const routes = [
     {
       path: '/',
       name: 'main',
-      component: HeyMain
+      component: HeyMain,
+      beforeEnter: function(to, from, next) {
+        if(from.fullPath != "/") {
+          window.history.go(-1)
+        }else {
+          next()
+        }
+      }
     },
     {
       path: '/stock',
@@ -48,7 +56,7 @@ const routes = [
   ];
 
 let router = new Router({
-  mode: 'history',
+  mode: config.isDevEnv ? 'history' : 'hash',
   routes: routes
 });
 
