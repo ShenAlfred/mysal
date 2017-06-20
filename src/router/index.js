@@ -3,13 +3,19 @@ import Router from 'vue-router'
 import Stock from '@/components/Stock/Stock'
 import Setting from '@/components/Stock/Setting'
 import Edit from '@/components/Stock/Edit'
+import HeyMain from '@/components/HeyMain'
 
 Vue.use(Router)
 
 const routes = [
     {
       path: '/',
-      name: 'StockMain',
+      name: 'main',
+      component: HeyMain
+    },
+    {
+      path: '/stock',
+      name: 'StockList',
       meta: {
         title: '股票',
       },

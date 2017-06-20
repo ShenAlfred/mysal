@@ -1,7 +1,8 @@
 <template>
   <div style="height: 100%" v-h5-title="$route.meta.title">
       <div class="scroll-page">
-        <swipeout>
+        <div v-if="isGetData">
+          <swipeout>
           <div v-for="(stock, $index) in stocks">
             <swipeout-item transition-mode="follow">
               <div slot="right-menu">
@@ -32,13 +33,11 @@
             </swipeout-item>
           </div>
         </swipeout>
-        <div class="no-content" v-if="stocks.length == 0">
+        </div>
+        <div class="no-content" v-if="!isGetData">
           没有您要关注的股票,<br />
           请点击新增您的股票！！
         </div>
-        <!--<div class="load-more" @native.click>-->
-          <!--点击加载更多!-->
-        <!--</div>-->
       </div>
     <div class="control-warp">
       <div class="control-group">
@@ -48,14 +47,6 @@
               <router-link to="/EA" class="link">
                 <i class="fa fa-plus i-mc"></i>
                 <div>新增</div>
-              </router-link>
-            </div>
-          </flexbox-item>
-          <flexbox-item>
-            <div class="control-btn">
-              <router-link to="/Setting" class="link">
-                <i class="fa fa-cog i-mc"></i>
-                <div>设置</div>
               </router-link>
             </div>
           </flexbox-item>
@@ -143,7 +134,8 @@
   export default{
     data(){
       return{
-        stocks: []
+        stocks: [],
+        isGetData: false
       }
     },
     components:{
@@ -184,26 +176,10 @@
     },
     mounted () {
       const that = this;
-      const query = {
-        ticket: this.$route.query.ticket
-      }
-      this.$ajax.get(config.baseUrl + "/stock/test", {
-        params: {
-          ticket: query.ticket
-        }
-      }).then(function(result) {
-        if(result.data.code == 0) {
-          that.$ajax.get(config.baseUrl + api.getUserInfo, {
-          }).then(function(result) {
-            if(result.data.code === "0") {
-              store.state.userInfo = result.data.data
-              that.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
-                if(result.data.code === "0") {
-                  that.stocks = result.data.data;
-                }
-              });
-            }
-          });
+      this.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
+        if(result.data.code === "0") {
+          that.stocks = result.data.data;
+          that.isGetData = true;
         }
       });
     }
