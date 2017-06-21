@@ -121,29 +121,29 @@
   export default{
     data(){
       return{
-        searchStocks: [],
-        isSelected: false,     //是否选择股票了
-        isGetData: false,
-        showTips: false,
-        tipsText: "",
-        loadText: "处理中...",
-        showLoading: false,
-        isNumberReg: new RegExp("^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"),
+        searchStocks: [],                                                                     //查到的股票数据
+        isSelected: false,                                                                    //是否选择股票了
+        isGetData: false,                                                                     //是否获取到数据了
+        showTips: false,                                                                      //是否显示toast提示框
+        tipsText: "",                                                                         //toast提示框动态提示文本
+        loadText: "处理中...",                                                                //全局loading提示文本
+        showLoading: false,                                                                   //是否显示全局loading
+        isNumberReg: new RegExp("^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"),   //正则表达式是否是数字
         query: {              //提交参数
           id: '',
           maxP: '',
           minP: '',
           remind: ''
-        },
-        isEdit: false,        //是否是编辑页面
+        },                                                                    //请求参数
+        isEdit: false,                                                                             //是否是编辑页面
         stockData: {
           stockNumber: '',
           query_StockId: '',
           upLimit: '',
           downLimit: '',
           isRemind: true
-        },
-        confirmSaveData: {
+        },                                                      //保存股票数据对象
+        confirmSaveData: {                                                                          //弹出框配置
           title: '保存股票',
           confirmIsShow: false
         }
@@ -180,7 +180,7 @@
           }
         }else {
           that.isGetData = false;
-          that.searchStocks = []
+          that.searchStocks = [];
         }
       },
       save () {
