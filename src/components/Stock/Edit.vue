@@ -128,6 +128,7 @@
         tipsText: "",
         loadText: "处理中...",
         showLoading: false,
+        isNumberReg: new RegExp("^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"),
         query: {              //提交参数
           id: '',
           maxP: '',
@@ -165,6 +166,7 @@
       },
       _getStockList (_code) {
         const that = this;
+        this.isGetData = false;
         if(this.stockData.stockNumber != "") {
           if(!this.isSelected) {
             this.$ajax.get(config.baseUrl + api.getStockList, {
@@ -183,16 +185,22 @@
       },
       save () {
         if(this.stockData.stockNumber == "") {
-          this.tipsText = "股票代码不能为空!"
+          this.tipsText = "股票代码不能为空!";
           this.showTips = true;
         }else if(this.stockData.upLimit == "") {
-          this.tipsText = "波动上限不能为空!"
+          this.tipsText = "波动上限不能为空!";
           this.showTips = true;
+        }else if(!(this.isNumberReg.test(this.stockData.upLimit))) {
+            this.tipText = "波动上限格式不对";
+            this.showTips = true;
         }else if(this.stockData.downLimit == "") {
-          this.tipsText = "波动下限不能为空!"
+          this.tipsText = "波动下限不能为空!";
+          this.showTips = true;
+        }else if(!(this.isNumberReg.test(this.stockData.downLimit))) {
+          this.tipText = "波动下限格式不对";
           this.showTips = true;
         }else if(this.stockData.upLimit < this.stockData.downLimit){
-          this.tipsText = "下限值不能大于上限值"
+          this.tipsText = "下限值不能大于上限值";
           this.showTips = true;
         }
         else {
@@ -256,11 +264,11 @@
       }else {
         this.isEdit = false;
       }
-    },
-    updated () {
       if(this.isEdit) {             //判断编辑页面默认已取到数据 不显示loading
         this.isGetData = true;
       }
+    },
+    updated () {
     },
     directives: {
       TransferDom
