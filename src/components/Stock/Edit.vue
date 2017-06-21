@@ -7,7 +7,7 @@
           <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
         </x-input>
         <div class="stock-list">
-          <div class="ac loading-text" v-show="!isGetData && stockData.stockNumber">
+          <div class="ac loading-text" v-show="!isGetData && stockData.stockNumber && !isSelected">
             <inline-loading></inline-loading><span>加载中...</span>
           </div>
           <div v-show="searchStocks.length && isGetData">
@@ -155,6 +155,7 @@
         this.stockData.query_StockId = _id;
         this.searchStocks = [];
         this.isSelected = true;
+        this.isGetData = true;
       },
       stockFocus () {
         this.isSelected = false;
