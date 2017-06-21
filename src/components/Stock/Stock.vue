@@ -11,7 +11,7 @@
               <swipeout-button @click.native="delStock($index, stock.id)" type="warn" v-if="stock.fixed == 0">删除</swipeout-button>
             </div>
             <div slot="content">
-              <flexbox class="stock-item vux-1px-b">
+              <flexbox class="stock-item" :class="{ 'vux-1px-b': $index != (stocks.length-1) }">
                 <flexbox-item>
                   <p class="s_up">
                     <span class="s_c">{{ stock.name }}</span>
@@ -72,7 +72,7 @@
     font-size: 14px;
   }
   .s_up {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
   }
   .s_down {
     font-size: 14px;
@@ -115,6 +115,7 @@
   .control-btn .link {
     display: block;
     color: #333;
+    line-height: 1.3;
     text-decoration: none;
   }
   .i-mc {

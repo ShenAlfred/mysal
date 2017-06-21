@@ -1,49 +1,49 @@
 <template>
-  <div v-h5-title="$route.meta.title">
-    <div class="stock-code">
-      <x-input type="number" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
-               :debounce="100" :disabled="isEdit"
-               @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
-        <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
-      </x-input>
-      <div class="stock-list">
-        <div class="ac loading-text" v-show="!isGetData && stockData.stockNumber">
-          <inline-loading></inline-loading><span>加载中...</span>
-        </div>
-        <div v-show="searchStocks.length && isGetData">
-          <div class="stock-tips">请选择一个股票:</div>
-          <div class="stock-item" v-for="(stock, $index) in searchStocks">
-            <a href="javascript:;" @click="selectStock(stock.code, stock.corpId)">
-                {{stock.name}}({{stock.code}})
-            </a>
+    <div v-h5-title="$route.meta.title">
+      <div class="stock-code">
+        <x-input type="number" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
+                 :debounce="100" :disabled="isEdit"
+                 @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
+          <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
+        </x-input>
+        <div class="stock-list">
+          <div class="ac loading-text" v-show="!isGetData && stockData.stockNumber">
+            <inline-loading></inline-loading><span>加载中...</span>
           </div>
-        </div>
-        <div v-show="searchStocks.length == 0 && stockData.stockNumber != '' && !isSelected && isGetData ">
-          <div class="stock-undata">
-            没有你要查询的股票~~~
+          <div v-show="searchStocks.length && isGetData">
+            <div class="stock-tips">请选择一个股票:</div>
+            <div class="stock-item" v-for="(stock, $index) in searchStocks">
+              <a href="javascript:;" @click="selectStock(stock.code, stock.corpId)">
+                {{stock.name}}({{stock.code}})
+              </a>
+            </div>
+          </div>
+          <div v-show="searchStocks.length == 0 && stockData.stockNumber != '' && !isSelected && isGetData ">
+            <div class="stock-undata">
+              没有你要查询的股票~~~
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
-      <div slot="label" class="custom-label"><b>*</b>波动上限:</div>
-    </x-input>
-    <x-input type="number" placeholder="请输入" v-model="stockData.downLimit">
-      <div slot="label" class="custom-label"><b>*</b>波动下限:</div>
-    </x-input>
-    <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
-    <div class="fixed-bottom">
-      <x-button type="warn" @click.native="save()">保存</x-button>
-    </div>
+      <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
+        <div slot="label" class="custom-label"><b>*</b>波动上限:</div>
+      </x-input>
+      <x-input type="number" placeholder="请输入" v-model="stockData.downLimit">
+        <div slot="label" class="custom-label"><b>*</b>波动下限:</div>
+      </x-input>
+      <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
+      <div class="fixed-bottom">
+        <x-button type="warn" @click.native="save()">保存</x-button>
+      </div>
 
-    <div v-transfer-dom>
-      <confirm v-model="confirmSaveData.confirmIsShow" :title="confirmSaveData.title" @on-confirm="saveConfirm()">
-        <p style="text-align:center;">确定保存吗?</p>
-      </confirm>
-      <loading v-model="showLoading" :text="loadText"></loading>
+      <div v-transfer-dom>
+        <confirm v-model="confirmSaveData.confirmIsShow" :title="confirmSaveData.title" @on-confirm="saveConfirm()">
+          <p style="text-align:center;">确定保存吗?</p>
+        </confirm>
+        <loading v-model="showLoading" :text="loadText"></loading>
+      </div>
+      <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
     </div>
-    <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
-  </div>
 </template>
 <style scoped>
   .loading-text {
@@ -102,12 +102,14 @@
     padding-right: 2px;
   }
   .fixed-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    margin-top: 20px;
     width: 100%;
     padding: 10px;
     background: #fff;
+  }
+  .weui-input {
+    height: auto;
+    line-height: 1.5;
   }
 </style>
 <script>
