@@ -13,7 +13,7 @@
           <div v-show="searchStocks.length && isGetData">
             <div class="stock-tips">请选择一个股票:</div>
             <div class="stock-item" v-for="(stock, $index) in searchStocks">
-              <a href="javascript:;" @click="selectStock(stock.code, stock.corpId)">
+              <a href="javascript:;" @click="selectStock(stock.code, stock.corpId, stock.market)">
                 {{stock.name}}({{stock.code}})
               </a>
             </div>
@@ -27,9 +27,11 @@
       </div>
       <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
         <div slot="label" class="custom-label"><b>*</b>波动上限:</div>
+        <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
       <x-input type="number" placeholder="请输入" v-model="stockData.downLimit">
         <div slot="label" class="custom-label"><b>*</b>波动下限:</div>
+        <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
       <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
       <div class="fixed-bottom">
@@ -46,6 +48,13 @@
     </div>
 </template>
 <style scoped>
+  .coin_unit {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    text-align: center;
+    font-size: 14px;
+  }
   .loading-text {
     font-size: 12px;
   }
@@ -128,7 +137,7 @@
         tipsText: "",                                                                         //toast提示框动态提示文本
         loadText: "处理中...",                                                                //全局loading提示文本
         showLoading: false,                                                                   //是否显示全局loading
-        isNumberReg: new RegExp("^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"),   //正则表达式是否是数字
+        unit: "",                                                                             //货币符号
         query: {              //提交参数
           id: '',
           maxP: '',
@@ -150,9 +159,14 @@
       }
     },
     methods: {
-      selectStock (_code, _id) {
+      selectStock (_code, _id, _market) {
         this.stockData.stockNumber = _code;
         this.stockData.query_StockId = _id;
+        if(_market == 'sh' || _market == 'sz') {
+            this.unit = '元'
+        }else {
+            this.unit = '港币'
+        }
         this.searchStocks = [];
         this.isSelected = true;
         this.isGetData = true;
@@ -185,8 +199,6 @@
         }
       },
       save () {
-        console.log(Number(this.stockData.upLimit))
-        console.log(Number(this.stockData.downLimit))
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!";
           this.showTips = true;
@@ -207,7 +219,7 @@
         }
       },
       saveConfirm () {
-        var that = this;
+        const that = this;
         this.showLoading = true;
         this.query["maxP"] =  this.stockData.upLimit;
         this.query["minP"] =  this.stockData.downLimit;
