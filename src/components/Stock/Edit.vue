@@ -185,26 +185,24 @@
         }
       },
       save () {
+        console.log(Number(this.stockData.upLimit))
+        console.log(Number(this.stockData.downLimit))
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!";
           this.showTips = true;
         }else if(this.stockData.upLimit == "") {
           this.tipsText = "波动上限不能为空!";
           this.showTips = true;
-        }else if(!(this.isNumberReg.test(this.stockData.upLimit))) {
-            this.tipText = "波动上限格式不对";
-            this.showTips = true;
         }else if(this.stockData.downLimit == "") {
           this.tipsText = "波动下限不能为空!";
           this.showTips = true;
-        }else if(!(this.isNumberReg.test(this.stockData.downLimit))) {
-          this.tipText = "波动下限格式不对";
-          this.showTips = true;
-        }else if(this.stockData.upLimit < this.stockData.downLimit){
+        }else if(Number(this.stockData.upLimit) < Number(this.stockData.downLimit)){
           this.tipsText = "下限值不能大于上限值";
           this.showTips = true;
-        }
-        else {
+        }else if(Number(this.stockData.upLimit) == Number(this.stockData.downLimit)) {
+          this.tipsText = "下限值不能等于上限值";
+          this.showTips = true;
+        }else {
           this.confirmSaveData.confirmIsShow = true;
         }
       },
