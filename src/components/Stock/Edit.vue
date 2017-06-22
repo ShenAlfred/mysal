@@ -26,11 +26,11 @@
         </div>
       </div>
       <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
-        <div slot="label" class="custom-label"><b>*</b>波动上限:</div>
+        <div slot="label" class="custom-label">波动上限:</div>
         <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
       <x-input type="number" placeholder="请输入" v-model="stockData.downLimit">
-        <div slot="label" class="custom-label"><b>*</b>波动下限:</div>
+        <div slot="label" class="custom-label">波动下限:</div>
         <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
       <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
@@ -202,18 +202,16 @@
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!";
           this.showTips = true;
-        }else if(this.stockData.upLimit == "") {
-          this.tipsText = "波动上限不能为空!";
+        }else if(this.stockData.upLimit == "" && this.stockData.downLimit == "") {
+          this.tipsText = "必需填写上限或者下限值"
           this.showTips = true;
-        }else if(this.stockData.downLimit == "") {
-          this.tipsText = "波动下限不能为空!";
-          this.showTips = true;
-        }else if(Number(this.stockData.upLimit) < Number(this.stockData.downLimit)){
-          this.tipsText = "下限值不能大于上限值";
-          this.showTips = true;
-        }else if(Number(this.stockData.upLimit) == Number(this.stockData.downLimit)) {
-          this.tipsText = "下限值不能等于上限值";
-          this.showTips = true;
+        }else if(Number(this.stockData.upLimit) && Number(this.stockData.downLimit)){
+            if(Number(this.stockData.downLimit) > Number(this.stockData.upLimit)) {
+              this.tipsText = "下限值不能大于上限值";
+              this.showTips = true;
+            }else {
+              this.confirmSaveData.confirmIsShow = true;
+            }
         }else {
           this.confirmSaveData.confirmIsShow = true;
         }
@@ -228,8 +226,8 @@
           this.$ajax.get(config.baseUrl + api.editStock, {
             params: {
               id: that.query.id,
-              maxP: that.query.maxP,
-              minP: that.query.minP,
+              maxP: that.query.maxP ? that.query.maxP : null,
+              minP: that.query.minP ? that.query.minP : null ,
               remind: that.query.remind
             }
            }).then(function(result) {
@@ -246,8 +244,8 @@
           this.$ajax.get(config.baseUrl + api.addStock, {
             params: {
               corpId: that.query.id,
-              maxP: that.query.maxP,
-              minP: that.query.minP,
+              maxP: that.query.maxP ? that.query.maxP : null,
+              minP: that.query.minP ? that.query.minP : null ,
               remind: that.query.remind
             }
           }).then(function(result) {
