@@ -234,23 +234,31 @@
             }
            }).then(function(result) {
               that.showLoading = false;
-              that.tipsText = result.data.msg;
-              that.showTips = true;
+              if(result.data.code == "0") {
+                that.$router.push({ name: 'StockList' })
+              }else {
+                that.tipsText = result.data.msg;
+                that.showTips = true;
+              }
            });
         }else {
-        this.query["id"] =  this.stockData.query_StockId;
-        this.$ajax.get(config.baseUrl + api.addStock, {
-          params: {
-            corpId: that.query.id,
-            maxP: that.query.maxP,
-            minP: that.query.minP,
-            remind: that.query.remind
-          }
-         }).then(function(result) {
-            that.showLoading = false;
-            that.tipsText = result.data.msg;
-            that.showTips = true;
-         });
+          this.query["id"] =  this.stockData.query_StockId;
+          this.$ajax.get(config.baseUrl + api.addStock, {
+            params: {
+              corpId: that.query.id,
+              maxP: that.query.maxP,
+              minP: that.query.minP,
+              remind: that.query.remind
+            }
+          }).then(function(result) {
+              that.showLoading = false;
+              if(result.data.code == "0") {
+                that.$router.push({ name: 'StockList' })
+              }else {
+                that.tipsText = result.data.msg;
+                that.showTips = true;
+              }
+          });
         }
       }
     },
