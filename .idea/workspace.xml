@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e78f428-f8ad-47d4-bcda-8031867a6023" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/Stock/Edit.vue" afterPath="$PROJECT_DIR$/src/components/Stock/Edit.vue" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -60,13 +59,17 @@
       <file leaf-file-name="Edit.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/Stock/Edit.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="209" column="43" lean-forward="true" selection-start-line="209" selection-start-column="43" selection-end-line="209" selection-end-column="43" />
+            <state relative-caret-position="171">
+              <caret line="32" column="59" lean-forward="false" selection-start-line="32" selection-start-column="59" selection-end-line="32" selection-end-column="59" />
               <folding>
-                <element signature="e#3561#3697#0" expanded="true" />
-                <element signature="e#4726#4836#0" expanded="false" />
-                <element signature="e#5040#5180#0" expanded="false" />
-                <element signature="e#9030#9546#0" expanded="false" />
+                <element signature="e#1383#1389#0" expanded="true" />
+                <element signature="e#1389#1395#0" expanded="true" />
+                <element signature="e#1610#1616#0" expanded="true" />
+                <element signature="e#1616#1622#0" expanded="true" />
+                <element signature="e#3585#3721#0" expanded="true" />
+                <element signature="e#4750#4860#0" expanded="false" />
+                <element signature="e#5064#5204#0" expanded="false" />
+                <element signature="e#9054#9570#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -413,12 +416,12 @@
       <workItem from="1497935228655" duration="86000" />
       <workItem from="1497935681832" duration="12312000" />
       <workItem from="1498008969054" duration="20283000" />
-      <workItem from="1498095145424" duration="19696000" />
+      <workItem from="1498095145424" duration="19914000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="223161000" />
+    <option name="totallyTimeSpent" value="223379000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1924" height="1056" extended-state="0" />
@@ -798,13 +801,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/Stock/Edit.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="209" column="43" lean-forward="true" selection-start-line="209" selection-start-column="43" selection-end-line="209" selection-end-column="43" />
+        <state relative-caret-position="171">
+          <caret line="32" column="59" lean-forward="false" selection-start-line="32" selection-start-column="59" selection-end-line="32" selection-end-column="59" />
           <folding>
-            <element signature="e#3561#3697#0" expanded="true" />
-            <element signature="e#4726#4836#0" expanded="false" />
-            <element signature="e#5040#5180#0" expanded="false" />
-            <element signature="e#9030#9546#0" expanded="false" />
+            <element signature="e#1383#1389#0" expanded="true" />
+            <element signature="e#1389#1395#0" expanded="true" />
+            <element signature="e#1610#1616#0" expanded="true" />
+            <element signature="e#1616#1622#0" expanded="true" />
+            <element signature="e#3585#3721#0" expanded="true" />
+            <element signature="e#4750#4860#0" expanded="false" />
+            <element signature="e#5064#5204#0" expanded="false" />
+            <element signature="e#9054#9570#0" expanded="false" />
           </folding>
         </state>
       </provider>

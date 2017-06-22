@@ -26,11 +26,11 @@
         </div>
       </div>
       <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
-        <div slot="label" class="custom-label">波动上限:</div>
+        <div slot="label" class="custom-label">&nbsp;&nbsp;波动上限:</div>
         <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
       <x-input type="number" placeholder="请输入" v-model="stockData.downLimit">
-        <div slot="label" class="custom-label">波动下限:</div>
+        <div slot="label" class="custom-label">&nbsp;&nbsp;波动下限:</div>
         <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
       <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
