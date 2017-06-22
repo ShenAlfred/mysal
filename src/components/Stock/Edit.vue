@@ -137,7 +137,7 @@
         tipsText: "",                                                                         //toast提示框动态提示文本
         loadText: "处理中...",                                                                //全局loading提示文本
         showLoading: false,                                                                   //是否显示全局loading
-        unit: "",                                                                             //货币符号
+        unit: "元",                                                                           //货币符号
         query: {              //提交参数
           id: '',
           maxP: '',
