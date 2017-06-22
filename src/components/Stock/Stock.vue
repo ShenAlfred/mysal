@@ -92,6 +92,7 @@
     height: 100%;
     padding-bottom: 60px;
     overflow-y: scroll;
+    -webkit-overflow-scrolling : touch;
   }
   .control-warp {
     position: fixed;
