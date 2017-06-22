@@ -54,6 +54,13 @@
         </flexbox>
       </div>
     </div>
+    <div v-transfer-dom>
+      <confirm v-model="confirmDelData.confirmIsShow" :title="confirmDelData.title" @on-confirm="delConfirm()">
+        <p style="text-align:center;">{{ confirmDelData.content }}</p>
+      </confirm>
+      <loading v-model="showLoading" :text="loadText"></loading>
+    </div>
+    <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
   </div>
 </template>
 <style lang="less" scoped>
@@ -128,7 +135,8 @@
   }
 </style>
 <script>
-  import { Loading , Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch } from 'vux'
+  import { Confirm, Loading , Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch, TransferDomDirective as TransferDom } from 'vux'
+  import Toast from '@/components/custom/toast.com'
   import config from '../../config'
   import api from '../../api'
   import store from '../../store'
@@ -136,11 +144,25 @@
   export default{
     data(){
       return{
-        stocks: [],           //存放股票数据列表数组
-        isLoading: false,   //显示loading
-        getData: null,     //获取到数据
-        error: null       //没有获取到数据
+        stocks: [],                                     //存放股票数据列表数组
+        isLoading: false,                               //显示loading
+        getData: null,                                  //获取到数据
+        error: null,                                    //没有获取到数据
+        loadText: "处理中...",                          //全局loading提示文本
+        showLoading: false,                             //是否显示全局loading
+        confirmDelData: {                               //弹出框配置
+          title: '刪除股票',
+          content: '確定刪除?',
+          confirmIsShow: false
+        },
+        delId: '',                                      //獲取當前點擊刪除股票的id,
+        delIndex: '',                                   //獲取當前點擊刪除股票的下標,
+        tipsText: '',
+        showTips: false
       }
+    },
+    directives: {
+      TransferDom
     },
     components:{
       Swipeout,
@@ -150,7 +172,9 @@
       Flexbox,
       FlexboxItem,
       XSwitch,
-      Loading
+      Loading,
+      Confirm,
+      Toast
     },
     methods: {
       isRemind (currentValue, index, _id) {
@@ -166,17 +190,10 @@
       goEdit (id) {
         this.$router.push({ name: 'StockEdit', params: { stockId: id } })
       },
-      delStock(index, _id) {
-        const that = this;
-        this.$ajax.get(config.baseUrl + api.delStock, {
-          params: {
-            id: _id
-          }
-        }).then(function(result) {
-          if(result.data.code === "0") {
-            that.stocks.splice(index, 1);
-          }
-        });
+      delStock(_index, _id) {
+        this.delId = _id;
+        this.delIndex = _index;
+        this.confirmDelData.confirmIsShow = true;
       },
       fetchData() {
         const that = this;
@@ -191,9 +208,23 @@
               }, 500);
           }
         });
+      },
+      delConfirm () {
+        const that = this;
+        this.$ajax.get(config.baseUrl + api.delStock, {
+          params: {
+            id: that.delId
+          }
+        }).then(function(result) {
+          if(result.data.code === "0") {
+              that.stocks.splice(that.delIndex, 1);
+              that.tipsText = result.data.msg;
+              that.showTips = true;
+          }
+        });
       }
     },
-    created () {
+    mounted () {
       this.fetchData();
     }
   }

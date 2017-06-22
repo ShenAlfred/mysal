@@ -12,14 +12,7 @@ const routes = [
     {
       path: '/',
       name: 'main',
-      component: HeyMain,
-      beforeEnter: function(to, from, next) {
-        if(from.fullPath != "/") {
-          window.history.go(-1)
-        }else {
-          next()
-        }
-      }
+      component: HeyMain
     },
     {
       path: '/stock',
