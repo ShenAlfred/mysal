@@ -1,7 +1,7 @@
 <template>
     <div v-h5-title="$route.meta.title">
       <div class="stock-code">
-        <x-input type="number" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
+        <x-input type="text" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
                  :debounce="100" :disabled="isEdit"
                  @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
           <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
@@ -25,11 +25,11 @@
           </div>
         </div>
       </div>
-      <x-input type="number" placeholder="请输入" v-model="stockData.upLimit">
+      <x-input type="text" placeholder="请输入" v-model="stockData.upLimit">
         <div slot="label" class="custom-label">&nbsp;&nbsp;波动上限:</div>
         <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
-      <x-input type="number" placeholder="请输入" v-model="stockData.downLimit">
+      <x-input type="text" placeholder="请输入" v-model="stockData.downLimit">
         <div slot="label" class="custom-label">&nbsp;&nbsp;波动下限:</div>
         <span slot="right" class="coin_unit">{{unit}}</span>
       </x-input>
@@ -137,6 +137,7 @@
         tipsText: "",                                                                         //toast提示框动态提示文本
         loadText: "处理中...",                                                                //全局loading提示文本
         showLoading: false,                                                                   //是否显示全局loading
+        isNumber: new RegExp("^[0-9]+\.?[0-9]*$"),
         unit: "元",                                                                           //货币符号
         query: {              //提交参数
           id: '',
@@ -199,13 +200,23 @@
         }
       },
       save () {
+        if(this.stockData.upLimit && !(this.isNumber.test(Number(this.stockData.upLimit)))) {
+            this.tipsText = "上限必须是数字";
+            this.showTips = true;
+            return;
+        }if(this.stockData.downLimit && !(this.isNumber.test(Number(this.stockData.downLimit)))) {
+            this.tipsText = "下限必须是数字";
+            this.showTips = true;
+            return;
+        }
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!";
           this.showTips = true;
-        }else if(this.stockData.upLimit == "" && this.stockData.downLimit == "") {
+        }else if( (this.stockData.upLimit  == "" || this.stockData.upLimit == null) && (this.stockData.downLimit == "" || this.stockData.downLimit == null) ) {
           this.tipsText = "必需填写上限或者下限值"
           this.showTips = true;
-        }else if(Number(this.stockData.upLimit) && Number(this.stockData.downLimit)){
+        }
+        else if(Number(this.stockData.upLimit) && Number(this.stockData.downLimit)){
             if(Number(this.stockData.downLimit) > Number(this.stockData.upLimit)) {
               this.tipsText = "下限值不能大于上限值";
               this.showTips = true;
