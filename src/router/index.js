@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Stock from '@/components/Stock/Stock'
-import Setting from '@/components/Stock/Setting'
 import Edit from '@/components/Stock/Edit'
-import HeyMain from '@/components/HeyMain'
 import config from '@/config'
 
 Vue.use(Router)
@@ -15,15 +13,7 @@ const routes = [
       meta: {
         title: '股票',
       },
-      component: Stock
-    },
-    {
-      path: '/Setting',
-      name: 'StockSetting',
-      meta: {
-        title: '设置',
-      },
-      component: Setting
+      component: resolve => require(['@/components/Stock/Stock'], resolve)
     },
     {
       path: '/EA',
@@ -31,7 +21,7 @@ const routes = [
       meta: {
         title: '新增',
       },
-      component: Edit
+      component: resolve => require(['@/components/Stock/Edit'], resolve)
     },
     {
       path: '/EA/:stockId',
@@ -39,7 +29,7 @@ const routes = [
       meta: {
         title: '编辑',
       },
-      component: Edit
+      component: resolve => require(['@/components/Stock/Edit'], resolve)
     }
   ];
 

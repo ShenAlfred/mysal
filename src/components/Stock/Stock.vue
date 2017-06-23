@@ -1,7 +1,6 @@
 <template>
   <div style="height: 100%" v-h5-title="$route.meta.title">
     <div class="scroll-page">
-      <loading v-model="isLoading"></loading>
       <div v-if="getData">
         <swipeout>
         <div v-for="(stock, $index) in stocks">
@@ -147,7 +146,6 @@
     data(){
       return{
         stocks: [],                                     //存放股票数据列表数组
-        isLoading: false,                               //显示loading
         getData: null,                                  //获取到数据
         error: null,                                    //没有获取到数据
         loadText: "处理中...",                          //全局loading提示文本
@@ -199,15 +197,15 @@
       },
       fetchData() {
         const that = this;
-        this.isLoading = true;
+        this.showLoading = true;
         that.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
-          that.isLoading = false;
+          that.showLoading = false;
           if(result.data.code === "0") {
-              that.error = false;
-              setTimeout(function() {
-                that.stocks = result.data.data;
-                that.getData = true;
-              }, 500);
+            that.error = false;
+            that.stocks = result.data.data;
+            that.getData = true;
+          }else {
+            that.error = true;
           }
         });
       },
