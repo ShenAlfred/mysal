@@ -267,7 +267,7 @@
               }
           });
       }else {
-        this.getUserInfo().then((result) => {
+        this.getUser().then((result) => {
           if(result.data.code == "0") {
             store.state.userInfo = result.data.data;
             this.fetchData();
