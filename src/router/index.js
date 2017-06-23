@@ -11,11 +11,6 @@ Vue.use(Router)
 const routes = [
     {
       path: '/',
-      name: 'main',
-      component: HeyMain
-    },
-    {
-      path: '/stock',
       name: 'StockList',
       meta: {
         title: '股票',

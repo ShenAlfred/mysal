@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="../../../dist/static/css/main.3849f1b800ad1dda6e4e9ef199f47d65.css">
 <template>
     <div v-h5-title="$route.meta.title">
       <div class="stock-code">

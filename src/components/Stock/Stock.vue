@@ -138,6 +138,7 @@
 <script>
   import { Confirm, Loading , Swipeout, SwipeoutItem, SwipeoutButton, XButton, Flexbox, FlexboxItem, XSwitch, TransferDomDirective as TransferDom } from 'vux'
   import Toast from '@/components/custom/toast.com'
+  import when from 'when'
   import config from '../../config'
   import api from '../../api'
   import store from '../../store'
@@ -223,10 +224,56 @@
               that.showTips = true;
           }
         });
+      },
+      getDevTicket () {
+        const deferred = when.defer();
+        const promise = deferred.promise;
+        const query = {
+          ticket: this.$route.query.ticket
+        };
+        this.$ajax.get(config.baseUrl + "/stock/test", {
+            params: {
+                ticket: query.ticket
+            }
+        }).then((response) => {
+          deferred.resolve(response);
+        }).catch((response) => {
+          deferred.reject(response);
+        });
+        return promise;
+      },
+      getUser () {
+        const deferred = when.defer();
+        const promise = deferred.promise;
+        this.$ajax.get(config.baseUrl + api.getUserInfo, {})
+          .then((response) => {
+            deferred.resolve(response);
+          }).catch((response) => {
+            deferred.reject(response);
+          });
+        return promise;
       }
     },
     mounted () {
-      this.fetchData();
+      if(config.isDevEnv) {
+          this.getDevTicket().then((result) => {
+              if(result.data.code == "0") {
+                  this.getUser().then((result) => {
+                      if(result.data.code == "0") {
+                          store.state.userInfo = result.data.data;
+                          this.fetchData();
+                      }
+                  });
+              }
+          });
+      }else {
+        this.getUserInfo().then((result) => {
+          if(result.data.code == "0") {
+            store.state.userInfo = result.data.data;
+            this.fetchData();
+          }
+        });
+      }
     }
   }
 </script>
