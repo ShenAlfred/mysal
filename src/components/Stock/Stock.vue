@@ -7,7 +7,7 @@
           <swipeout-item transition-mode="follow">
             <div slot="right-menu">
               <swipeout-button @click.native="goEdit(stock.id)" type="default">编辑</swipeout-button>
-              <swipeout-button @click.native="delStock($index, stock.id)" type="warn" v-if="stock.fixed == 0">删除</swipeout-button>
+              <swipeout-button @click.native="delStock($index, stock.id)" type="warn">删除</swipeout-button>
             </div>
             <div slot="content">
               <flexbox class="stock-item" :class="{ 'vux-1px-b': $index != (stocks.length-1) }">
