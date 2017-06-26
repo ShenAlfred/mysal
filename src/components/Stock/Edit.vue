@@ -174,7 +174,6 @@
         this.isGetData = true;
       },
       stockFocus () {
-          console.log(this.stockData.stockNumber)
         this.isSelected = false;
         this.isStartSearch = false;
         this._getStockList(this.stockData.stockNumber);
@@ -190,9 +189,9 @@
         if(this.stockData.stockNumber != "") {
           if(!this.isSelected) {
             this.$ajax.get(config.baseUrl + api.getStockList, {
-              params: {
-                code: _code
-              }
+                params: {
+                  code: encodeURI(_code)
+                }
             }).then(function(result) {
               that.isGetData = true;
               that.isStartSearch = false;
