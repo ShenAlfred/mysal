@@ -2,12 +2,12 @@
     <div v-h5-title="$route.meta.title">
       <div class="stock-code">
         <x-input type="text" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
-                 :debounce="100" :disabled="isEdit"
+                 :debounce="500" :disabled="isEdit"
                  @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
           <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
         </x-input>
         <div class="stock-list">
-          <div class="ac loading-text" v-show="!isGetData && stockData.stockNumber && !isSelected">
+          <div class="ac loading-text" v-show="!isGetData && isStartSearch && !isSelected">
             <inline-loading></inline-loading><span>加载中...</span>
           </div>
           <div v-show="searchStocks.length && isGetData">
@@ -156,7 +156,8 @@
         confirmSaveData: {                                                                          //弹出框配置
           title: '保存股票',
           confirmIsShow: false
-        }
+        },
+        isStartSearch: false,                                                                 //是否开始查询
       }
     },
     methods: {
@@ -173,11 +174,14 @@
         this.isGetData = true;
       },
       stockFocus () {
+          console.log(this.stockData.stockNumber)
         this.isSelected = false;
+        this.isStartSearch = false;
         this._getStockList(this.stockData.stockNumber);
       },
       getStockList (_code) {
         const that = this;
+        this.isStartSearch = true;
         this._getStockList(_code);
       },
       _getStockList (_code) {
@@ -191,15 +195,22 @@
               }
             }).then(function(result) {
               that.isGetData = true;
+              that.isStartSearch = false;
               that.searchStocks = result.data.data;
             });
           }
         }else {
           that.isGetData = false;
+          that.isStartSearch = false;
           that.searchStocks = [];
         }
       },
       save () {
+        if(this.stockData.stockNumber && !(this.isNumber.test(Number(this.stockData.stockNumber)))) {
+          this.tipsText = "股票代码必须是数字";
+          this.showTips = true;
+          return;
+        }
         if(this.stockData.upLimit && !(this.isNumber.test(Number(this.stockData.upLimit)))) {
             this.tipsText = "上限必须是数字";
             this.showTips = true;
