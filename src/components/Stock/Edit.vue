@@ -206,11 +206,6 @@
         }
       },
       save () {
-        if(this.stockData.stockNumber && !(this.isNumber.test(Number(this.stockData.stockNumber)))) {
-          this.tipsText = "股票代码必须是数字";
-          this.showTips = true;
-          return;
-        }
         if(this.stockData.upLimit && !(this.isNumber.test(Number(this.stockData.upLimit)))) {
             this.tipsText = "上限必须是数字";
             this.showTips = true;
