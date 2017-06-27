@@ -1,7 +1,10 @@
 <template>
   <div style="height: 100%" v-h5-title="$route.meta.title">
+    <div class="fixed-tips">
+      您好，我们{{delayTime}}秒取一次数据，最长会有{{delayTime+10}}秒延迟
+    </div>
     <div class="scroll-page">
-      <div v-if="getData">
+      <div v-show="getData">
         <swipeout>
         <div v-for="(stock, $index) in stocks">
           <swipeout-item transition-mode="follow">
@@ -64,6 +67,16 @@
 </template>
 <style lang="less" scoped>
   @import '~vux/src/styles/1px.less';
+  .fixed-tips {
+    position: fixed;
+    padding: 5px 0;
+    background: #E64340;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    z-index: 10;
+  }
   .stock-item {
     padding: 10px 15px;
     background: #fff;
@@ -90,6 +103,7 @@
   .scroll-page {
     height: 100%;
     padding-bottom: 60px;
+    padding-top: 32px;
     overflow-y: scroll;
     -webkit-overflow-scrolling : touch;
   }
@@ -158,7 +172,8 @@
         delId: '',                                      //獲取當前點擊刪除股票的id,
         delIndex: '',                                   //獲取當前點擊刪除股票的下標,
         tipsText: '',
-        showTips: false
+        showTips: false,
+        delayTime: ''
       }
     },
     directives: {
@@ -259,6 +274,7 @@
                   this.getUser().then((result) => {
                       if(result.data.code == "0") {
                           store.state.userInfo = result.data.data;
+                          this.delayTime = result.data.data.time;
                           this.fetchData();
                       }
                   });
@@ -268,6 +284,7 @@
         this.getUser().then((result) => {
           if(result.data.code == "0") {
             store.state.userInfo = result.data.data;
+            this.delayTime = result.data.data.time;
             this.fetchData();
           }
         });
