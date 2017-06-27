@@ -70,8 +70,8 @@
   .fixed-tips {
     position: fixed;
     padding: 5px 0;
-    background: #E64340;
-    color: #fff;
+    background: #f5cb6e;
+    color: #333;
     font-size: 14px;
     text-align: center;
     width: 100%;
