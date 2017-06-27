@@ -18,7 +18,7 @@
               </a>
             </div>
           </div>
-          <div v-show="searchStocks.length == 0 && stockData.stockNumber != '' && !isSelected && isGetData ">
+          <div v-show="stockData.stockNumber && isError ">
             <div class="stock-undata">
               没有你要查询的股票~~~
             </div>
@@ -132,11 +132,12 @@
       return{
         searchStocks: [],                                                                     //查到的股票数据
         isSelected: false,                                                                    //是否选择股票了
-        isGetData: false,                                                                     //是否获取到数据了
+        isGetData: null,                                                                      //是否获取到数据了
         showTips: false,                                                                      //是否显示toast提示框
         tipsText: "",                                                                         //toast提示框动态提示文本
         loadText: "处理中...",                                                                //全局loading提示文本
-        showLoading: false,                                                                   //是否显示全局loading
+        showLoading: false,                                                                   //是否显示全局loading,
+        isError: false,                                                                       //没有获取到股票数据
         isNumber: new RegExp("^[0-9]+\.?[0-9]*$"),
         unit: "元",                                                                           //货币符号
         query: {              //提交参数
@@ -158,12 +159,14 @@
           confirmIsShow: false
         },
         isStartSearch: false,                                                                 //是否开始查询
+        corpId: ''                                                                            //选中股票corpId
       }
     },
     methods: {
       selectStock (_code, _id, _market) {
         this.stockData.stockNumber = _code;
         this.stockData.query_StockId = _id;
+        this.corpId = _id;
         if(_market == 'sh' || _market == 'sz') {
             this.unit = '元'
         }else {
@@ -180,12 +183,15 @@
       },
       getStockList (_code) {
         const that = this;
-        this.isStartSearch = true;
-        this._getStockList(_code);
+        if(!this.isSelected) {
+          this.corpId = ""
+          this.isStartSearch = true;
+          this._getStockList(_code);
+        }
+        this.isSelected = false;
       },
       _getStockList (_code) {
         const that = this;
-        this.isGetData = false;
         if(this.stockData.stockNumber != "") {
           if(!this.isSelected) {
             this.$ajax.get(config.baseUrl + api.getStockList, {
@@ -193,9 +199,15 @@
                   code: encodeURI(_code)
                 }
             }).then(function(result) {
-              that.isGetData = true;
-              that.isStartSearch = false;
-              that.searchStocks = result.data.data;
+                if(result.data.data) {
+                  that.isGetData = true;
+                  that.isStartSearch = false;
+                  that.searchStocks = result.data.data;
+                }else {
+                  that.isGetData = false;
+                  that.isError = true;
+                }
+
             });
           }
         }else {
@@ -205,6 +217,12 @@
         }
       },
       save () {
+          console.log(this.corpId)
+        if(!this.corpId) {
+          this.tipsText = "请选择一只股票";
+          this.showTips = true;
+          return;
+        }
         if(this.stockData.upLimit && !(this.isNumber.test(Number(this.stockData.upLimit)))) {
             this.tipsText = "上限必须是数字";
             this.showTips = true;
