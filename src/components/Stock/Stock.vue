@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%" v-h5-title="$route.meta.title">
     <div class="fixed-tips">
-      您好，我们{{delayTime}}秒取一次数据，最长会有{{delayTime+10}}秒延迟
+      数据{{delayTime}}秒采集一次（系统可配）。
     </div>
     <div class="scroll-page">
       <div v-show="getData">
