@@ -1,7 +1,7 @@
 <template>
     <div v-h5-title="$route.meta.title">
       <div class="stock-code">
-        <x-input type="text" placeholder="请输入股票代码" v-model="stockData.stockNumber" :show-clear="false"
+        <x-input type="text" placeholder="股票代码/股票名称" v-model="stockData.stockNumber" :show-clear="false"
                  :debounce="500" :disabled="isEdit"
                  @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
           <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
@@ -217,7 +217,6 @@
         }
       },
       save () {
-          console.log(this.corpId)
         if(!this.corpId) {
           this.tipsText = "请选择一只股票";
           this.showTips = true;
@@ -311,6 +310,7 @@
           that.stockData.isRemind = result.remind;
           that.isSelected = true;
           that.query["id"] = result.id;
+          that.corpId = result.id;
         });
       }else {
         this.isEdit = false;
