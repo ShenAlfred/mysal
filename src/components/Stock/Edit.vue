@@ -25,19 +25,83 @@
           </div>
         </div>
       </div>
-      <x-input type="text" placeholder="请输入" v-model="stockData.upLimit">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;波动上限:</div>
-        <span slot="right" class="coin_unit">{{unit}}</span>
+      <div class="bd-warp vux-1px-t">
+        <flexbox>
+          <div>&nbsp;&nbsp;波动上限:</div>
+          <flexbox-item style="margin-right: 8px;">
+            <div class="sl-ip-com">
+              <flexbox style="height: 100%;">
+                <flexbox-item style="height: 100%;">
+                  <input type="text" class="sl-ip" v-model="stockData.upLimit">
+                </flexbox-item>
+                <div class="sl-unit">
+                  {{unit}}
+                </div>
+              </flexbox>
+            </div>
+            <div v-for="upLimit in stockData.upLimits">
+              <limit :limit-data="upLimit" @refUpLimitNumber="refreshUpLimitNumber"></limit>
+            </div>
+            <div class="sl-add-btn" v-on:click="addUpLimit()" v-show="maxUpLimit != 1">+</div>
+          </flexbox-item>
+        </flexbox>
+      </div>
+      <div class="bd-warp vux-1px-t">
+        <flexbox>
+          <div>&nbsp;&nbsp;波动下限:</div>
+          <flexbox-item style="margin-right: 8px;">
+            <div class="sl-ip-com">
+              <flexbox style="height: 100%;">
+                <flexbox-item style="height: 100%;">
+                  <input type="text" class="sl-ip" v-model="stockData.downLimit">
+                </flexbox-item>
+                  <div class="sl-unit">
+                    {{unit}}
+                  </div>
+              </flexbox>
+            </div>
+            <div v-for="downLimit in stockData.downLimits">
+              <limit :limit-data="downLimit" @refDownLimitNumber="refreshDownLimitNumber"></limit>
+            </div>
+            <div class="sl-add-btn" v-on:click="addDownLimit()" v-show="maxDownLimit != 1">+</div>
+          </flexbox-item>
+        </flexbox>
+      </div>
+      <x-input type="text" placeholder="请输入" v-model="stockData.zf">
+        <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;涨幅:</div>
+        <span slot="right" class="coin_unit">%</span>
       </x-input>
-      <x-input type="text" placeholder="请输入" v-model="stockData.downLimit">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;波动下限:</div>
-        <span slot="right" class="coin_unit">{{unit}}</span>
+      <x-input type="text" placeholder="请输入" v-model="stockData.df">
+        <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跌幅:</div>
+        <span slot="right" class="coin_unit">%</span>
       </x-input>
+      <div class="bd-warp vux-1px-t">
+        <flexbox>
+          <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;平台
+          </div>
+          <flexbox-item>
+            <div class="select-wp">
+              <select v-model="stockData.plant">
+                <option>111</option>
+                <option>222</option>
+                <option>333</option>
+                <option>444</option>
+              </select>
+            </div>
+          </flexbox-item>
+        </flexbox>
+      </div>
+      <x-input type="text" placeholder="请输入" v-model="stockData.remind_time">
+        <div slot="label" class="custom-label">&nbsp;&nbsp;提醒周期:</div>
+      </x-input>
+      <x-textarea v-model="stockData.remark">
+        <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:</div>
+      </x-textarea>
       <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
       <div class="fixed-bottom">
         <x-button type="warn" @click.native="save()">保存</x-button>
       </div>
-
       <div v-transfer-dom>
         <confirm v-model="confirmSaveData.confirmIsShow" :title="confirmSaveData.title" @on-confirm="saveConfirm()">
           <p style="text-align:center;">确定保存吗?</p>
@@ -47,7 +111,31 @@
       <toast v-bind:tip-text="tipsText" v-model="showTips" close-time="5"></toast>
     </div>
 </template>
-<style scoped>
+
+<style lang="less" scoped>
+  @import '~vux/src/styles/1px.less';
+  select {
+    border: none;
+    width: 100%;
+    outline: 0;
+  }
+  .select-wp {
+    margin-left: 8px;
+    height: 100%;
+    margin-right: 20px;
+  }
+  .bd-warp {
+    padding: 10px 0;
+    margin-left: 15px;
+  }
+  .sl-add-btn {
+    height: 40px;
+    width: 100%;
+    border: 1px dashed #ddd;
+    color: #ddd;
+    line-height: 40px;
+    text-align: center;
+  }
   .coin_unit {
     display: inline-block;
     vertical-align: middle;
@@ -122,10 +210,12 @@
   }
 </style>
 <script>
-  import { InlineLoading,Loading,XInput,XSwitch,XButton,Alert,Confirm,Flexbox,FlexboxItem,TransferDomDirective as TransferDom } from 'vux'
+  import { InlineLoading,Loading,XInput,XTextarea,XSwitch,XButton,Alert,Confirm,Flexbox,FlexboxItem,TransferDomDirective as TransferDom } from 'vux'
   import Toast from '@/components/custom/toast.com'
+  import Limit from '@/components/custom/limit.com'
   import config from '../../config'
   import api from '../../api'
+  import store from '@/store/index'
 
   export default{
     data(){
@@ -140,26 +230,36 @@
         isError: false,                                                                       //没有获取到股票数据
         isNumber: new RegExp("^[0-9]+\.?[0-9]*$"),
         unit: "元",                                                                           //货币符号
-        query: {              //提交参数
+        query: {                                                                              //提交参数
           id: '',
           maxP: '',
           minP: '',
           remind: ''
-        },                                                                    //请求参数
+        },
         isEdit: false,                                                                             //是否是编辑页面
         stockData: {
           stockNumber: '',
           query_StockId: '',
+          upLimits: [],
+          downLimits: [],
           upLimit: '',
           downLimit: '',
+          zf: '',
+          df: '',
+          remark: '',
+          plant: '',
+          remind_time: 60,
           isRemind: true
-        },                                                      //保存股票数据对象
+        },                                                                                    //保存股票数据对象
         confirmSaveData: {                                                                          //弹出框配置
           title: '保存股票',
           confirmIsShow: false
         },
         isStartSearch: false,                                                                 //是否开始查询
-        corpId: ''                                                                            //选中股票corpId
+        corpId: '',                                                                            //选中股票corpId
+        maxAddNum: 5,
+        maxUpLimit: 5,
+        maxDownLimit: 5
       }
     },
     methods: {
@@ -216,39 +316,132 @@
           that.searchStocks = [];
         }
       },
+      //保存股票触发事件
       save () {
-        if(!this.corpId) {
-          this.tipsText = "请选择一只股票";
+        var pass = true;
+        if(!(this.concatArr(this.stockData.downLimit, store.state.downLimitArr).length) && !(this.concatArr(this.stockData.upLimit, store.state.upLimitArr).length)) {
+          this.tipsText = "必需填写上限或者下限值";
           this.showTips = true;
+          pass = false;
           return;
         }
-        if(this.stockData.upLimit && !(this.isNumber.test(Number(this.stockData.upLimit)))) {
-            this.tipsText = "上限必须是数字";
+        if(!(this.verdictWaveGroup('up', this.stockData.upLimit, store.state.upLimitArr))){
+          this.tipsText = "上限必须是数字";
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+        if(!(this.verdictWaveGroup('down', this.stockData.downLimit, store.state.downLimitArr))) {
+          this.tipsText = '下限必须是数字';
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+        if(!(this.verdictArrayRepeat(this.concatArr(this.stockData.upLimit, store.state.upLimitArr)))) {
+          this.tipsText = '上限不能有重复值';
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+        if(!(this.verdictArrayRepeat(this.concatArr(this.stockData.downLimit, store.state.downLimitArr)))) {
+          this.tipsText = '下限不能有重复值';
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+        if(!(this.compareValue(this.concatArr(this.stockData.upLimit, store.state.upLimitArr), this.concatArr(this.stockData.downLimit, store.state.downLimitArr)))) {
+          this.tipsText = '下限不能大于上限';
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+//        if(this.stockData.stockNumber == "") {
+//          this.tipsText = "股票代码不能为空!";
+//          this.showTips = true;
+//          return;
+//        }
+//        if(!this.corpId) {
+//          this.tipsText = "请选择一只股票";
+//          this.showTips = true;
+//          return;
+//        }
+        if(this.stockData.zf && !(this.isNumber.test(Number(this.stockData.zf)))) {
+            this.tipsText = "涨幅必须是数字";
             this.showTips = true;
-            return;
-        }if(this.stockData.downLimit && !(this.isNumber.test(Number(this.stockData.downLimit)))) {
-            this.tipsText = "下限必须是数字";
-            this.showTips = true;
+            pass = false;
             return;
         }
-        if(this.stockData.stockNumber == "") {
-          this.tipsText = "股票代码不能为空!";
-          this.showTips = true;
-        }else if( (this.stockData.upLimit  == "" || this.stockData.upLimit == null) && (this.stockData.downLimit == "" || this.stockData.downLimit == null) ) {
-          this.tipsText = "必需填写上限或者下限值"
-          this.showTips = true;
+        if(this.stockData.df && !(this.isNumber.test(Number(this.stockData.df)))) {
+            this.tipsText = "跌幅必须是数字";
+            this.showTips = true;
+            pass = false;
+            return;
         }
-        else if(Number(this.stockData.upLimit) && Number(this.stockData.downLimit)){
-            if(Number(this.stockData.downLimit) > Number(this.stockData.upLimit)) {
-              this.tipsText = "下限值不能大于上限值";
-              this.showTips = true;
-            }else {
-              this.confirmSaveData.confirmIsShow = true;
-            }
-        }else {
+        if(this.stockData.remind_time && !(this.isNumber.test(Number(this.stockData.remind_time)))) {
+          this.tipsText = "提醒周期必须是数字";
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+        if(pass) {
           this.confirmSaveData.confirmIsShow = true;
         }
       },
+      //链接两个数组
+      concatArr (arr1, arr2) {
+        const arr = [];
+        var result = [];
+        arr1 ? arr.push({
+            value: arr1
+          }) : arr;
+        result = arr.concat(arr2);
+        return result;
+      },
+      //判断波动组的值是否合法和值是否相同
+      verdictWaveGroup (type, _default, group) {
+        var result = [];
+        result = this.concatArr(_default, group);
+        for(var i=0, len=result.length; i < len; i++) {
+          if(!(this.isNumber.test(Number(result[i].value)))) {
+            return false;
+          }
+        }
+        return true;
+      },
+      //判断数组里的数据是否有重复
+      verdictArrayRepeat (_arr) {
+        var flag = true, arr = [], arr_sort = [];
+        for(var i=0; i<_arr.length; i++) {
+          arr.push(Number(_arr[i].value))
+        }
+        arr_sort = arr.sort();
+        for(var i=0;i<arr_sort.length;i++) {
+          if (arr_sort[i] == arr_sort[i+1]) {
+            flag = false;
+            return flag;
+          }
+        }
+        return flag;
+      },
+      //比较下限值不能大于上限值
+      compareValue (_upArr, _downArr) {
+        var upArr = [], downArr = [];
+        if(_upArr.length && _downArr.length) {
+          for(var i=0; i<_upArr.length; i++) {
+            upArr.push(Number(_upArr[i].value));
+          }
+          for(var j=0; j<_downArr.length; j++) {
+            downArr.push(Number(_downArr[j].value));
+          }
+          var up_min = Math.min.apply(null, upArr);
+          var down_max = Math.max.apply(null, downArr);
+          if(down_max > up_min) {
+              return false;
+          }
+        }
+        return true;
+      },
+      //确定保存触发事件
       saveConfirm () {
         const that = this;
         this.showLoading = true;
@@ -291,9 +484,42 @@
               }
           });
         }
+      },
+      //添加多个下限事件
+      addDownLimit() {
+        this.maxDownLimit--;
+        store.state.downLimitArr.push({
+          type: 'down',
+          value: '',
+          unit: this.unit
+        });
+        store.state.countDownLimitNumber = this.maxDownLimit;
+        this.stockData.downLimits = store.state.downLimitArr;
+      },
+      addUpLimit () {
+        this.maxUpLimit--;
+        store.state.upLimitArr.push({
+          type: 'up',
+          value: '',
+          unit: this.unit
+        });
+        store.state.countUpLimitNumber = this.maxUpLimit;
+        this.stockData.upLimits = store.state.upLimitArr;
+      },
+      //刷新波动下限计数值
+      refreshDownLimitNumber (count) {
+          this.maxDownLimit = count;
+      },
+      refreshUpLimitNumber (count) {
+          this.maxUpLimit = count;
       }
     },
     mounted () {
+//      store.state.countUpLimitNumber = 0;
+//      store.state.countDownLimitNumber = 0;
+//      store.state.upLimitArr = [];
+//      store.state.downLimitArr = [];
+
       const stockId = this.$route.params.stockId;
       const that = this;
       if(stockId >=0) {
@@ -332,7 +558,11 @@
       Alert,
       Toast,
       Loading,
-      InlineLoading
+      InlineLoading,
+      XTextarea,
+      Flexbox,
+      FlexboxItem,
+      Limit
     }
   }
 </script>
