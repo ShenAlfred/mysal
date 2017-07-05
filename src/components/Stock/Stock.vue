@@ -6,7 +6,7 @@
     <div class="scroll-page">
       <div v-show="getData">
         <swipeout>
-        <div v-for="(stock, $index) in stocks">
+          <div v-for="(stock, $index) in stocks">
           <swipeout-item transition-mode="follow">
             <div slot="right-menu">
               <swipeout-button @click.native="goEdit(stock.id)" type="default">编辑</swipeout-button>
@@ -15,16 +15,19 @@
             <div slot="content">
               <flexbox class="stock-item" :class="{ 'vux-1px-b': $index != (stocks.length-1) }">
                 <flexbox-item>
-                  <p class="s_up">
+                  <p class="s_up ellipsis">
                     <span class="s_c">{{ stock.name }}</span>
                     <span class="d_c">({{ stock.code }})</span>
                   </p>
+                  <p class="s_up s_down">
+                    <span>平台:&nbsp;&nbsp;{{ stock.platName }}</span>
+                  </p>
                   <p class="s_down">
                   <span>
-                    上限: {{ stock.maxP == null ? '--' :  stock.maxP }}
+                    上限: {{ stock.maxP == "" ? '--' :  stock.maxP }}
                   </span>
                     <span>
-                    下限: {{ stock.minP == null ? '--' :  stock.minP }}
+                    下限: {{ stock.minP == "" ? '--' :  stock.minP }}
                   </span>
                   </p>
                 </flexbox-item>
@@ -35,7 +38,7 @@
             </div>
           </swipeout-item>
         </div>
-      </swipeout>
+        </swipeout>
       </div>
       <div class="no-content" v-if="error">
         没有您要关注的股票,<br />
@@ -78,12 +81,12 @@
     z-index: 10;
   }
   .stock-item {
-    padding: 10px 15px;
+    padding: 10px 15px 10px;
     background: #fff;
   }
   .s_c {
     color: #333;
-    font-size: 20px;
+    font-size: 18px;
   }
   .d_c {
     padding-left: 15px;
@@ -210,6 +213,13 @@
         this.delIndex = _index;
         this.confirmDelData.confirmIsShow = true;
       },
+      getFirstData (arrStr) {
+        var first = "";
+        if(arrStr) {
+          first = arrStr.split(',')[0];
+        }
+        return first
+      },
       fetchData() {
         const that = this;
         this.showLoading = true;
@@ -218,6 +228,11 @@
           if(result.data.code === "0") {
             that.error = false;
             that.stocks = result.data.data;
+            for(var i=0; i<that.stocks.length; i++) {
+             that.stocks[i]['maxP'] = that.getFirstData(that.stocks[i].maxP);
+             that.stocks[i]['minP'] = that.getFirstData(that.stocks[i].minP);
+            }
+            console.log(that.stocks)
             that.getData = true;
           }else {
             that.error = true;
@@ -244,6 +259,7 @@
         const query = {
           ticket: this.$route.query.ticket
         };
+        console.log(query)
         this.$ajax.get(config.baseUrl + "/stock/test", {
             params: {
                 ticket: query.ticket

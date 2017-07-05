@@ -10,7 +10,7 @@ const api = {
   editStock:          '/stock/api/edit',         //修改股票
   delStock:           '/stock/api/del',          //用户删除关注的股票
   getStockInfo:       '/stock/api/selfstock',    //用户关注股票信息
-  plant:              '/stock/api/platform'      //获取平台数据
+  getPlant:              '/stock/api/platform'      //获取平台数据
 };
 
 export default api;

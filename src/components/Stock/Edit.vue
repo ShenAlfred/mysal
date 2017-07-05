@@ -27,15 +27,15 @@
       </div>
       <div class="bd-warp vux-1px-t">
         <flexbox>
-          <div>&nbsp;&nbsp;波动上限:</div>
-          <flexbox-item style="margin-right: 8px;">
+          <div class="custom-label">&nbsp;&nbsp;波动上限:</div>
+          <flexbox-item style="margin-left: 0;margin-right: 8px;">
             <div class="sl-ip-com">
               <flexbox style="height: 100%;">
                 <flexbox-item style="height: 100%;">
                   <input type="text" class="sl-ip" v-model="stockData.upLimit">
                 </flexbox-item>
                 <div class="sl-unit">
-                  {{unit}}
+                  {{stockData.unit}}
                 </div>
               </flexbox>
             </div>
@@ -48,15 +48,15 @@
       </div>
       <div class="bd-warp vux-1px-t">
         <flexbox>
-          <div>&nbsp;&nbsp;波动下限:</div>
-          <flexbox-item style="margin-right: 8px;">
+          <div class="custom-label">&nbsp;&nbsp;波动下限:</div>
+          <flexbox-item style="margin-left: 0; margin-right: 8px;">
             <div class="sl-ip-com">
               <flexbox style="height: 100%;">
                 <flexbox-item style="height: 100%;">
                   <input type="text" class="sl-ip" v-model="stockData.downLimit">
                 </flexbox-item>
                   <div class="sl-unit">
-                    {{unit}}
+                    {{stockData.unit}}
                   </div>
               </flexbox>
             </div>
@@ -77,23 +77,22 @@
       </x-input>
       <div class="bd-warp vux-1px-t">
         <flexbox>
-          <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;平台
+          <div class="custom-label">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>*</b>平台:
           </div>
-          <flexbox-item>
+          <flexbox-item style="margin-left: 0">
             <div class="select-wp">
               <select v-model="stockData.plant">
-                <option>111</option>
-                <option>222</option>
-                <option>333</option>
-                <option>444</option>
+                <option :value="plant.platCode" v-for="plant in plants">
+                  {{plant.platName}}
+                </option>
               </select>
             </div>
           </flexbox-item>
         </flexbox>
       </div>
       <x-input type="text" placeholder="请输入" v-model="stockData.remind_time">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;提醒周期:</div>
+        <div slot="label" class="custom-label"><b>*</b>提醒周期:</div>
       </x-input>
       <x-textarea v-model="stockData.remark">
         <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:</div>
@@ -120,7 +119,6 @@
     outline: 0;
   }
   .select-wp {
-    margin-left: 8px;
     height: 100%;
     margin-right: 20px;
   }
@@ -229,12 +227,18 @@
         showLoading: false,                                                                   //是否显示全局loading,
         isError: false,                                                                       //没有获取到股票数据
         isNumber: new RegExp("^[0-9]+\.?[0-9]*$"),
-        unit: "元",                                                                           //货币符号
+        plants: [],                                                                           //平台数组
         query: {                                                                              //提交参数
           id: '',
           maxP: '',
           minP: '',
-          remind: ''
+          remind: '',
+          emsRemind: true,
+          period: '',
+          maxW: '',
+          minW: '',
+          platCode: '',
+          remark: ''
         },
         isEdit: false,                                                                             //是否是编辑页面
         stockData: {
@@ -244,34 +248,40 @@
           downLimits: [],
           upLimit: '',
           downLimit: '',
+          unit: "元",                                                                                //货币符号
           zf: '',
           df: '',
           remark: '',
           plant: '',
           remind_time: 60,
           isRemind: true
-        },                                                                                    //保存股票数据对象
+        },                                                                                          //保存股票数据对象
         confirmSaveData: {                                                                          //弹出框配置
           title: '保存股票',
           confirmIsShow: false
         },
-        isStartSearch: false,                                                                 //是否开始查询
-        corpId: '',                                                                            //选中股票corpId
+        isStartSearch: false,                                                                       //是否开始查询
+        corpId: '',                                                                                 //选中股票corpId
         maxAddNum: 5,
         maxUpLimit: 5,
         maxDownLimit: 5
       }
     },
     methods: {
+      whatUnit (_market) {
+        var unit = "";
+        if(_market == 'sh' || _market == 'sz') {
+          unit = '元'
+        }else {
+          unit = '港币'
+        }
+        return unit;
+      },
       selectStock (_code, _id, _market) {
         this.stockData.stockNumber = _code;
         this.stockData.query_StockId = _id;
         this.corpId = _id;
-        if(_market == 'sh' || _market == 'sz') {
-            this.unit = '元'
-        }else {
-            this.unit = '港币'
-        }
+        this.stockData.unit = this.whatUnit(_market);
         this.searchStocks = [];
         this.isSelected = true;
         this.isGetData = true;
@@ -294,10 +304,8 @@
         const that = this;
         if(this.stockData.stockNumber != "") {
           if(!this.isSelected) {
-            this.$ajax.get(config.baseUrl + api.getStockList, {
-                params: {
-                  code: encodeURI(_code)
-                }
+            this.$ajax.post(config.baseUrl + api.getStockList, {
+              code: _code
             }).then(function(result) {
                 if(result.data.data) {
                   that.isGetData = true;
@@ -319,6 +327,18 @@
       //保存股票触发事件
       save () {
         var pass = true;
+        if(this.stockData.stockNumber == "") {
+          this.tipsText = "股票代码不能为空!";
+          this.showTips = true;
+          pass = false;
+          return;
+        }
+        if(!this.corpId) {
+          this.tipsText = "请选择一只股票";
+          this.showTips = true;
+          pass = false;
+          return;
+        }
         if(!(this.concatArr(this.stockData.downLimit, store.state.downLimitArr).length) && !(this.concatArr(this.stockData.upLimit, store.state.upLimitArr).length)) {
           this.tipsText = "必需填写上限或者下限值";
           this.showTips = true;
@@ -355,16 +375,6 @@
           pass = false;
           return;
         }
-//        if(this.stockData.stockNumber == "") {
-//          this.tipsText = "股票代码不能为空!";
-//          this.showTips = true;
-//          return;
-//        }
-//        if(!this.corpId) {
-//          this.tipsText = "请选择一只股票";
-//          this.showTips = true;
-//          return;
-//        }
         if(this.stockData.zf && !(this.isNumber.test(Number(this.stockData.zf)))) {
             this.tipsText = "涨幅必须是数字";
             this.showTips = true;
@@ -376,6 +386,12 @@
             this.showTips = true;
             pass = false;
             return;
+        }
+        if(this.stockData.remind_time == "") {
+          this.tipsText = "提醒周期不能为空";
+          this.showTips = true;
+          pass = false;
+          return;
         }
         if(this.stockData.remind_time && !(this.isNumber.test(Number(this.stockData.remind_time)))) {
           this.tipsText = "提醒周期必须是数字";
@@ -435,27 +451,48 @@
           }
           var up_min = Math.min.apply(null, upArr);
           var down_max = Math.max.apply(null, downArr);
-          if(down_max > up_min) {
+          if(down_max >= up_min) {
               return false;
           }
         }
         return true;
       },
+      //數組轉換字符串
+      changeArrToString (arr) {
+        var result = "", temp = [];
+        if(arr) {
+          for(var i=0; i< arr.length; i++) {
+            temp.push(arr[i].value)
+          }
+          result = temp.join();
+        }
+        return result;
+      },
+      //字符串转换数组
+      changeStrToArr (str) {
+        var arr = [];
+        if(str) {
+          arr = str.split(',');
+        }
+        return arr;
+      },
       //确定保存触发事件
       saveConfirm () {
         const that = this;
+        var upLimitStr = this.changeArrToString(this.concatArr(this.stockData.upLimit, store.state.upLimitArr)),
+            downLimitStr = this.changeArrToString(this.concatArr(this.stockData.downLimit, store.state.downLimitArr));
         this.showLoading = true;
-        this.query["maxP"] =  this.stockData.upLimit;
-        this.query["minP"] =  this.stockData.downLimit;
-        this.query["remind"] =  this.stockData.isRemind;
+        this.query["maxP"] = upLimitStr ? upLimitStr: null;
+        this.query["minP"] = downLimitStr ? downLimitStr : null;
+        this.query["remind"] = this.stockData.isRemind;
+        this.query["period"] = this.stockData.remind_time;
+        this.query["maxW"] = this.stockData.zf ? this.stockData.zf : null;
+        this.query["minW"] = this.stockData.df ? this.stockData.df : null;
+        this.query["platCode"] = this.stockData.plant;
+        this.query["remark"] = this.stockData.remark ? this.stockData.remark : null;
         if(this.isEdit) {
           this.$ajax.get(config.baseUrl + api.editStock, {
-            params: {
-              id: that.query.id,
-              maxP: that.query.maxP ? that.query.maxP : null,
-              minP: that.query.minP ? that.query.minP : null ,
-              remind: that.query.remind
-            }
+            params: this.query
            }).then(function(result) {
               that.showLoading = false;
               if(result.data.code == "0") {
@@ -466,15 +503,8 @@
               }
            });
         }else {
-          this.query["id"] =  this.stockData.query_StockId;
-          this.$ajax.get(config.baseUrl + api.addStock, {
-            params: {
-              corpId: that.query.id,
-              maxP: that.query.maxP ? that.query.maxP : null,
-              minP: that.query.minP ? that.query.minP : null ,
-              remind: that.query.remind
-            }
-          }).then(function(result) {
+          this.query["corpId"] =  this.stockData.query_StockId;
+          this.$ajax.post(config.baseUrl + api.addStock, this.query).then(function(result) {
               that.showLoading = false;
               if(result.data.code == "0") {
                 that.$router.push({ name: 'StockList' })
@@ -491,7 +521,7 @@
         store.state.downLimitArr.push({
           type: 'down',
           value: '',
-          unit: this.unit
+          unit: this.stockData.unit
         });
         store.state.countDownLimitNumber = this.maxDownLimit;
         this.stockData.downLimits = store.state.downLimitArr;
@@ -501,7 +531,7 @@
         store.state.upLimitArr.push({
           type: 'up',
           value: '',
-          unit: this.unit
+          unit: this.stockData.unit
         });
         store.state.countUpLimitNumber = this.maxUpLimit;
         this.stockData.upLimits = store.state.upLimitArr;
@@ -512,17 +542,47 @@
       },
       refreshUpLimitNumber (count) {
           this.maxUpLimit = count;
+      },
+      //请求平台数据
+      requestPlant () {
+          this.$ajax.get(config.baseUrl + api.getPlant, {}).then((result) => {
+            if(result.data.data) {
+                this.plants = result.data.data;
+                this.stockData.plant = result.data.data[0].platCode;
+            }
+          });
+      },
+      //封装上下限数据
+      packagingUData (_type, arr, _unit) {
+        var count = 0;
+        if(arr.length) {
+          _type == "upLimits" ? this.stockData.upLimit = arr[0] : this.stockData.downLimit = arr[0];
+          for(var i=1; i<arr.length; i++) {
+            this.stockData[_type].push({
+                value: arr[i],
+                unit: _unit,
+                type: _type == "upLimits" ? "up" : "down"
+            })
+          }
+          count = this.maxAddNum - arr.length + 1;
+        }else {
+          count = this.maxAddNum
+        }
+        console.log(_type + "：" + count)
+        if(_type == "upLimits") {
+          store.state.upLimitArr = this.stockData[_type];
+          store.state.countUpLimitNumber = this.maxUpLimit = count;
+        } else {
+          store.state.downLimitArr = this.stockData[_type];
+          store.state.countDownLimitNumber = this.maxDownLimit = count;
+        }
       }
     },
     mounted () {
-//      store.state.countUpLimitNumber = 0;
-//      store.state.countDownLimitNumber = 0;
-//      store.state.upLimitArr = [];
-//      store.state.downLimitArr = [];
-
+      this.requestPlant();
       const stockId = this.$route.params.stockId;
       const that = this;
-      if(stockId >=0) {
+      if(stockId >=0) {                                   //进入的是编辑页面
         this.isEdit = true;
         this.$ajax.get(config.baseUrl + api.getStockInfo, {
           params: {
@@ -530,10 +590,17 @@
           }
         }).then(function(result) {
           var result = result.data.data;
+          console.log(result)
           that.stockData.stockNumber = result.code;
-          that.stockData.upLimit = result.maxP;
-          that.stockData.downLimit = result.minP;
+          that.stockData.unit = that.whatUnit(result.market);
+          that.packagingUData("upLimits", that.changeStrToArr(result.maxP), that.stockData.unit);
+          that.packagingUData("downLimits", that.changeStrToArr(result.minP), that.stockData.unit);
+          that.stockData.zf = result.maxW;
+          that.stockData.df = result.minW;
+          that.stockData.plant = result.platCode;
+          that.stockData.remark = result.remark;
           that.stockData.isRemind = result.remind;
+          that.stockData.remind_time = result.period;
           that.isSelected = true;
           that.query["id"] = result.id;
           that.corpId = result.id;
@@ -545,7 +612,11 @@
         this.isGetData = true;
       }
     },
-    updated () {
+    destroyed () {
+      store.state.downLimitArr = [];
+      store.state.upLimitArr = [];
+      store.state.countDownLimitNumber = '';
+      store.state.countUpLimitNumber = '';
     },
     directives: {
       TransferDom
