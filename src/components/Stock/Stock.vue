@@ -40,7 +40,7 @@
         </div>
         </swipeout>
       </div>
-      <div class="no-content" v-if="error">
+      <div class="no-content" v-show="error || stocks.length == 0">
         没有您要关注的股票,<br />
         请点击新增您的股票！！
       </div>
@@ -225,14 +225,13 @@
         this.showLoading = true;
         that.$ajax.get(config.baseUrl + api.attentionStocks).then(function(result) {
           that.showLoading = false;
-          if(result.data.code === "0") {
+          if(result.data.data.length) {
             that.error = false;
             that.stocks = result.data.data;
             for(var i=0; i<that.stocks.length; i++) {
              that.stocks[i]['maxP'] = that.getFirstData(that.stocks[i].maxP);
              that.stocks[i]['minP'] = that.getFirstData(that.stocks[i].minP);
             }
-            console.log(that.stocks)
             that.getData = true;
           }else {
             that.error = true;
@@ -259,7 +258,6 @@
         const query = {
           ticket: this.$route.query.ticket
         };
-        console.log(query)
         this.$ajax.get(config.baseUrl + "/stock/test", {
             params: {
                 ticket: query.ticket

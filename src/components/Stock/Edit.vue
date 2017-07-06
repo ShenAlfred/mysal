@@ -214,6 +214,7 @@
   import config from '../../config'
   import api from '../../api'
   import store from '@/store/index'
+  import utils from '@/util'
 
   export default{
     data(){
@@ -393,6 +394,12 @@
           pass = false;
           return;
         }
+        if( !(utils.isInteger(Number(this.stockData.remind_time))) ) {
+          this.tipsText = "提醒周期必须是整数";
+          this.showTips = true;
+          pass = false;
+          return;
+        }
         if(this.stockData.remind_time && !(this.isNumber.test(Number(this.stockData.remind_time)))) {
           this.tipsText = "提醒周期必须是数字";
           this.showTips = true;
@@ -491,9 +498,7 @@
         this.query["platCode"] = this.stockData.plant;
         this.query["remark"] = this.stockData.remark ? this.stockData.remark : null;
         if(this.isEdit) {
-          this.$ajax.get(config.baseUrl + api.editStock, {
-            params: this.query
-           }).then(function(result) {
+          this.$ajax.post(config.baseUrl + api.editStock, this.query).then(function(result) {
               that.showLoading = false;
               if(result.data.code == "0") {
                 that.$router.push({ name: 'StockList' })
@@ -568,7 +573,6 @@
         }else {
           count = this.maxAddNum
         }
-        console.log(_type + "：" + count)
         if(_type == "upLimits") {
           store.state.upLimitArr = this.stockData[_type];
           store.state.countUpLimitNumber = this.maxUpLimit = count;
@@ -590,7 +594,6 @@
           }
         }).then(function(result) {
           var result = result.data.data;
-          console.log(result)
           that.stockData.stockNumber = result.code;
           that.stockData.unit = that.whatUnit(result.market);
           that.packagingUData("upLimits", that.changeStrToArr(result.maxP), that.stockData.unit);
