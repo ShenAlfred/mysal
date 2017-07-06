@@ -333,7 +333,6 @@
       },
       //保存股票触发事件
       save () {
-          this.parseArray(this.concatArr(this.stockData.upLimit, store.state.upLimitArr));
         var pass = true;
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!";
@@ -410,13 +409,6 @@
         if(pass) {
           this.confirmSaveData.confirmIsShow = true;
         }
-      },
-      parseArray (_arr) {
-        var arr = [];
-        for(var i=0; i<_arr.length; i++) {
-          arr.push(_arr[i].value);
-        }
-        return arr;
       },
       //链接两个数组
       concatArr (arr1, arr2) {
