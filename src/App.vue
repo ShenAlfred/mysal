@@ -21,6 +21,10 @@ export default {
 @import 'assets/style/common.css';
 @import 'assets/FontAwesome-4.7.0/css/font-awesome.min.css';
 
+body, html {
+  background: #fff;
+}
+
 #app {
   color: #2c3e50;
   background: #fff;

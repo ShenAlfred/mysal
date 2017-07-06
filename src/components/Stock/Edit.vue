@@ -67,11 +67,11 @@
           </flexbox-item>
         </flexbox>
       </div>
-      <x-input type="text" placeholder="请输入" v-model="stockData.zf">
+      <x-input type="text" placeholder="请输入" v-model="stockData.zf" :show-clear="false">
         <div slot="label" class="custom-label">&nbsp;&nbsp;涨幅阈值:</div>
         <span slot="right" class="coin_unit">%</span>
       </x-input>
-      <x-input type="text" placeholder="请输入" v-model="stockData.df">
+      <x-input type="text" placeholder="请输入" v-model="stockData.df" :show-clear="false">
         <div slot="label" class="custom-label">&nbsp;&nbsp;跌幅阈值:</div>
         <span slot="right" class="coin_unit">%</span>
       </x-input>
@@ -91,11 +91,11 @@
           </flexbox-item>
         </flexbox>
       </div>
-      <x-input type="text" placeholder="请输入" v-model="stockData.remind_time">
+      <x-input type="text" placeholder="请输入" v-model="stockData.remind_time" :show-clear="false">
         <div slot="label" class="custom-label"><b>*</b>提醒周期:</div>
         <span slot="right">分钟</span>
       </x-input>
-      <x-textarea v-model="stockData.remark">
+      <x-textarea v-model="stockData.remark" :max="200">
         <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:</div>
       </x-textarea>
       <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
@@ -118,6 +118,10 @@
     border: none;
     width: 100%;
     outline: 0;
+    background: transparent;
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
   }
   .select-wp {
     height: 100%;
@@ -319,7 +323,6 @@
                   that.isGetData = false;
                   that.isError = true;
                 }
-
             });
           }
         }else {
@@ -351,13 +354,13 @@
           return;
         }
         if(!(this.verdictWaveGroup('up', this.stockData.upLimit, store.state.upLimitArr))){
-          this.tipsText = "上限必须是数字";
+          this.tipsText = "上限必须是数值";
           this.showTips = true;
           pass = false;
           return;
         }
         if(!(this.verdictWaveGroup('down', this.stockData.downLimit, store.state.downLimitArr))) {
-          this.tipsText = '下限必须是数字';
+          this.tipsText = '下限必须是数值';
           this.showTips = true;
           pass = false;
           return;
@@ -375,19 +378,19 @@
           return;
         }
         if(!(this.compareValue(this.concatArr(this.stockData.upLimit, store.state.upLimitArr), this.concatArr(this.stockData.downLimit, store.state.downLimitArr)))) {
-          this.tipsText = '下限不能大于上限';
+          this.tipsText = '下限必须小于上限';
           this.showTips = true;
           pass = false;
           return;
         }
         if(this.stockData.zf && !(this.isNumber.test(Number(this.stockData.zf)))) {
-          this.tipsText = "涨幅必须是数字";
+          this.tipsText = "涨幅必须是大于零的数值";
           this.showTips = true;
           pass = false;
           return;
         }
         if(this.stockData.df && !(this.isNumber.test(Number(this.stockData.df)))) {
-          this.tipsText = "跌幅必须是数字";
+          this.tipsText = "跌幅必须是大于零的数值";
           this.showTips = true;
           pass = false;
           return;
@@ -399,7 +402,7 @@
           return;
         }
         if(this.stockData.remind_time && !(this.isNumber.test(Number(this.stockData.remind_time))) || !(utils.isInteger(Number(this.stockData.remind_time))) || this.zeroFirst.test(this.stockData.remind_time) ) {
-          this.tipsText = "提醒周期必须是数字";
+          this.tipsText = "提醒周期必须是整数";
           this.showTips = true;
           pass = false;
           return;
@@ -421,7 +424,7 @@
         var result = [], arr2_cl = [];
         arr1 ? arr.push({
             value: arr1
-          }) : arr;
+        }) : arr;
         for(var i=0; i<arr2.length; i++) {
           if(arr2[i].value !== "") {
             arr2_cl.push(arr2[i])
@@ -505,8 +508,8 @@
         this.query["minP"] = downLimitStr ? downLimitStr : null;
         this.query["remind"] = this.stockData.isRemind;
         this.query["period"] = this.stockData.remind_time;
-        this.query["maxW"] = this.stockData.zf ? this.stockData.zf : null;
-        this.query["minW"] = this.stockData.df ? this.stockData.df : null;
+        this.query["maxW"] = this.stockData.zf ? Number(this.stockData.zf) : null;
+        this.query["minW"] = this.stockData.df ? Number(this.stockData.df) : null;
         this.query["platCode"] = this.stockData.plant;
         this.query["remark"] = this.stockData.remark ? this.stockData.remark : null;
         if(this.isEdit) {
