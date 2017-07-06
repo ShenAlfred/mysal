@@ -68,11 +68,11 @@
         </flexbox>
       </div>
       <x-input type="text" placeholder="请输入" v-model="stockData.zf">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;涨幅:</div>
+        <div slot="label" class="custom-label">&nbsp;&nbsp;涨幅阈值:</div>
         <span slot="right" class="coin_unit">%</span>
       </x-input>
       <x-input type="text" placeholder="请输入" v-model="stockData.df">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跌幅:</div>
+        <div slot="label" class="custom-label">&nbsp;&nbsp;跌幅阈值:</div>
         <span slot="right" class="coin_unit">%</span>
       </x-input>
       <div class="bd-warp vux-1px-t">
@@ -93,6 +93,7 @@
       </div>
       <x-input type="text" placeholder="请输入" v-model="stockData.remind_time">
         <div slot="label" class="custom-label"><b>*</b>提醒周期:</div>
+        <span slot="right">分钟</span>
       </x-input>
       <x-textarea v-model="stockData.remark">
         <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:</div>
@@ -228,6 +229,8 @@
         showLoading: false,                                                                   //是否显示全局loading,
         isError: false,                                                                       //没有获取到股票数据
         isNumber: new RegExp("^[0-9]+\.?[0-9]*$"),
+        zeroFirst: new RegExp("^(0+[1-9][0-9]*)$"),
+        zeroFirst1: new RegExp("^(0[1-9][0-9]*)$"),
         plants: [],                                                                           //平台数组
         query: {                                                                              //提交参数
           id: '',
@@ -327,6 +330,7 @@
       },
       //保存股票触发事件
       save () {
+          this.parseArray(this.concatArr(this.stockData.upLimit, store.state.upLimitArr));
         var pass = true;
         if(this.stockData.stockNumber == "") {
           this.tipsText = "股票代码不能为空!";
@@ -340,8 +344,8 @@
           pass = false;
           return;
         }
-        if(!(this.concatArr(this.stockData.downLimit, store.state.downLimitArr).length) && !(this.concatArr(this.stockData.upLimit, store.state.upLimitArr).length)) {
-          this.tipsText = "必需填写上限或者下限值";
+        if(!(this.concatArr(this.stockData.downLimit, store.state.downLimitArr).length) && !(this.concatArr(this.stockData.upLimit, store.state.upLimitArr).length) && this.stockData.zf == "" && this.stockData.df == "") {
+          this.tipsText = "上限、下限或阈值至少填一个";
           this.showTips = true;
           pass = false;
           return;
@@ -377,16 +381,16 @@
           return;
         }
         if(this.stockData.zf && !(this.isNumber.test(Number(this.stockData.zf)))) {
-            this.tipsText = "涨幅必须是数字";
-            this.showTips = true;
-            pass = false;
-            return;
+          this.tipsText = "涨幅必须是数字";
+          this.showTips = true;
+          pass = false;
+          return;
         }
         if(this.stockData.df && !(this.isNumber.test(Number(this.stockData.df)))) {
-            this.tipsText = "跌幅必须是数字";
-            this.showTips = true;
-            pass = false;
-            return;
+          this.tipsText = "跌幅必须是数字";
+          this.showTips = true;
+          pass = false;
+          return;
         }
         if(this.stockData.remind_time == "") {
           this.tipsText = "提醒周期不能为空";
@@ -394,13 +398,7 @@
           pass = false;
           return;
         }
-        if( !(utils.isInteger(Number(this.stockData.remind_time))) ) {
-          this.tipsText = "提醒周期必须是整数";
-          this.showTips = true;
-          pass = false;
-          return;
-        }
-        if(this.stockData.remind_time && !(this.isNumber.test(Number(this.stockData.remind_time)))) {
+        if(this.stockData.remind_time && !(this.isNumber.test(Number(this.stockData.remind_time))) || !(utils.isInteger(Number(this.stockData.remind_time))) || this.zeroFirst.test(this.stockData.remind_time) ) {
           this.tipsText = "提醒周期必须是数字";
           this.showTips = true;
           pass = false;
@@ -410,14 +408,26 @@
           this.confirmSaveData.confirmIsShow = true;
         }
       },
+      parseArray (_arr) {
+        var arr = [];
+        for(var i=0; i<_arr.length; i++) {
+          arr.push(_arr[i].value);
+        }
+        return arr;
+      },
       //链接两个数组
       concatArr (arr1, arr2) {
         const arr = [];
-        var result = [];
+        var result = [], arr2_cl = [];
         arr1 ? arr.push({
             value: arr1
           }) : arr;
-        result = arr.concat(arr2);
+        for(var i=0; i<arr2.length; i++) {
+          if(arr2[i].value !== "") {
+            arr2_cl.push(arr2[i])
+          }
+        }
+        result = arr.concat(arr2_cl);
         return result;
       },
       //判断波动组的值是否合法和值是否相同
@@ -435,7 +445,9 @@
       verdictArrayRepeat (_arr) {
         var flag = true, arr = [], arr_sort = [];
         for(var i=0; i<_arr.length; i++) {
-          arr.push(Number(_arr[i].value))
+            if(_arr[i].value !== "") {
+              arr.push(Number(_arr[i].value))
+            }
         }
         arr_sort = arr.sort();
         for(var i=0;i<arr_sort.length;i++) {
@@ -469,7 +481,7 @@
         var result = "", temp = [];
         if(arr) {
           for(var i=0; i< arr.length; i++) {
-            temp.push(arr[i].value)
+            temp.push(Number(arr[i].value));
           }
           result = temp.join();
         }
@@ -586,7 +598,7 @@
       this.requestPlant();
       const stockId = this.$route.params.stockId;
       const that = this;
-      if(stockId >=0) {                                   //进入的是编辑页面
+      if(stockId >=0) {                                                               //进入的是编辑页面
         this.isEdit = true;
         this.$ajax.get(config.baseUrl + api.getStockInfo, {
           params: {
