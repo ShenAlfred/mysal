@@ -1,106 +1,108 @@
 <template>
-    <div v-h5-title="$route.meta.title">
-      <div class="stock-code">
-        <x-input type="text" placeholder="股票代码/股票名称" v-model="stockData.stockNumber" :show-clear="false"
-                 :debounce="500" :disabled="isEdit"
-                 @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
-          <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
-        </x-input>
-        <div class="stock-list">
-          <div class="ac loading-text" v-show="!isGetData && isStartSearch && !isSelected">
-            <inline-loading></inline-loading><span>加载中...</span>
-          </div>
-          <div v-show="searchStocks.length && isGetData">
-            <div class="stock-tips">请选择一个股票:</div>
-            <div class="stock-item" v-for="(stock, $index) in searchStocks">
-              <a href="javascript:;" @click="selectStock(stock.code, stock.corpId, stock.market)">
-                {{stock.name}}({{stock.code}})
-              </a>
+    <div v-h5-title="$route.meta.title" style="height: 100%">
+      <div class="scroll-page">
+        <div class="stock-code">
+          <x-input type="text" placeholder="股票代码/股票名称" v-model="stockData.stockNumber" :show-clear="false"
+                   :debounce="500" :disabled="isEdit"
+                   @on-change="getStockList(stockData.stockNumber)" @on-focus="stockFocus">
+            <div slot="label" class="custom-label"><b>*</b>股票代码:</div>
+          </x-input>
+          <div class="stock-list">
+            <div class="ac loading-text" v-show="!isGetData && isStartSearch && !isSelected">
+              <inline-loading></inline-loading><span>加载中...</span>
             </div>
-          </div>
-          <div v-show="stockData.stockNumber && isError ">
-            <div class="stock-undata">
-              没有你要查询的股票~~~
+            <div v-show="searchStocks.length && isGetData">
+              <div class="stock-tips">请选择一个股票:</div>
+              <div class="stock-item" v-for="(stock, $index) in searchStocks">
+                <a href="javascript:;" @click="selectStock(stock.code, stock.corpId, stock.market)">
+                  {{stock.name}}({{stock.code}})
+                </a>
+              </div>
+            </div>
+            <div v-show="stockData.stockNumber && isError ">
+              <div class="stock-undata">
+                没有你要查询的股票~~~
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="bd-warp vux-1px-t">
-        <flexbox>
-          <div class="custom-label">&nbsp;&nbsp;波动上限:</div>
-          <flexbox-item style="margin-left: 0;margin-right: 8px;">
-            <div class="sl-ip-com">
-              <flexbox style="height: 100%;">
-                <flexbox-item style="height: 100%;">
-                  <input type="text" class="sl-ip" v-model="stockData.upLimit">
-                </flexbox-item>
-                <div class="sl-unit">
-                  {{stockData.unit}}
-                </div>
-              </flexbox>
-            </div>
-            <div v-for="upLimit in stockData.upLimits">
-              <limit :limit-data="upLimit" @refUpLimitNumber="refreshUpLimitNumber"></limit>
-            </div>
-            <div class="sl-add-btn" v-on:click="addUpLimit()" v-show="maxUpLimit != 1">+</div>
-          </flexbox-item>
-        </flexbox>
-      </div>
-      <div class="bd-warp vux-1px-t">
-        <flexbox>
-          <div class="custom-label">&nbsp;&nbsp;波动下限:</div>
-          <flexbox-item style="margin-left: 0; margin-right: 8px;">
-            <div class="sl-ip-com">
-              <flexbox style="height: 100%;">
-                <flexbox-item style="height: 100%;">
-                  <input type="text" class="sl-ip" v-model="stockData.downLimit">
-                </flexbox-item>
+        <div class="bd-warp vux-1px-t">
+          <flexbox>
+            <div class="custom-label">&nbsp;&nbsp;波动上限:</div>
+            <flexbox-item style="margin-left: 0;margin-right: 8px;">
+              <div class="sl-ip-com">
+                <flexbox style="height: 100%;">
+                  <flexbox-item style="height: 100%;">
+                    <input type="text" class="sl-ip" v-model="stockData.upLimit">
+                  </flexbox-item>
                   <div class="sl-unit">
                     {{stockData.unit}}
                   </div>
-              </flexbox>
+                </flexbox>
+              </div>
+              <div v-for="upLimit in stockData.upLimits">
+                <limit :limit-data="upLimit" @refUpLimitNumber="refreshUpLimitNumber"></limit>
+              </div>
+              <div class="sl-add-btn" v-on:click="addUpLimit()" v-show="maxUpLimit != 1">+</div>
+            </flexbox-item>
+          </flexbox>
+        </div>
+        <div class="bd-warp vux-1px-t">
+          <flexbox>
+            <div class="custom-label">&nbsp;&nbsp;波动下限:</div>
+            <flexbox-item style="margin-left: 0; margin-right: 8px;">
+              <div class="sl-ip-com">
+                <flexbox style="height: 100%;">
+                  <flexbox-item style="height: 100%;">
+                    <input type="text" class="sl-ip" v-model="stockData.downLimit">
+                  </flexbox-item>
+                  <div class="sl-unit">
+                    {{stockData.unit}}
+                  </div>
+                </flexbox>
+              </div>
+              <div v-for="downLimit in stockData.downLimits">
+                <limit :limit-data="downLimit" @refDownLimitNumber="refreshDownLimitNumber"></limit>
+              </div>
+              <div class="sl-add-btn" v-on:click="addDownLimit()" v-show="maxDownLimit != 1">+</div>
+            </flexbox-item>
+          </flexbox>
+        </div>
+        <x-input type="text" placeholder="请输入" v-model="stockData.zf" :show-clear="false">
+          <div slot="label" class="custom-label">&nbsp;&nbsp;涨幅阈值:</div>
+          <span slot="right" class="coin_unit">%</span>
+        </x-input>
+        <x-input type="text" placeholder="请输入" v-model="stockData.df" :show-clear="false">
+          <div slot="label" class="custom-label">&nbsp;&nbsp;跌幅阈值:</div>
+          <span slot="right" class="coin_unit">%</span>
+        </x-input>
+        <div class="bd-warp vux-1px-t">
+          <flexbox>
+            <div class="custom-label">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>*</b>平台:
             </div>
-            <div v-for="downLimit in stockData.downLimits">
-              <limit :limit-data="downLimit" @refDownLimitNumber="refreshDownLimitNumber"></limit>
-            </div>
-            <div class="sl-add-btn" v-on:click="addDownLimit()" v-show="maxDownLimit != 1">+</div>
-          </flexbox-item>
-        </flexbox>
-      </div>
-      <x-input type="text" placeholder="请输入" v-model="stockData.zf" :show-clear="false">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;涨幅阈值:</div>
-        <span slot="right" class="coin_unit">%</span>
-      </x-input>
-      <x-input type="text" placeholder="请输入" v-model="stockData.df" :show-clear="false">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;跌幅阈值:</div>
-        <span slot="right" class="coin_unit">%</span>
-      </x-input>
-      <div class="bd-warp vux-1px-t">
-        <flexbox>
-          <div class="custom-label">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>*</b>平台:
-          </div>
-          <flexbox-item style="margin-left: 0">
-            <div class="select-wp">
-              <select v-model="stockData.plant">
-                <option :value="plant.platCode" v-for="plant in plants">
-                  {{plant.platName}}
-                </option>
-              </select>
-            </div>
-          </flexbox-item>
-        </flexbox>
-      </div>
-      <x-input type="text" placeholder="请输入" v-model="stockData.remind_time" :show-clear="false">
-        <div slot="label" class="custom-label"><b>*</b>提醒周期:</div>
-        <span slot="right">分钟</span>
-      </x-input>
-      <x-textarea v-model="stockData.remark" :max="200">
-        <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:</div>
-      </x-textarea>
-      <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
-      <div class="fixed-bottom">
-        <x-button type="warn" @click.native="save()">保存</x-button>
+            <flexbox-item style="margin-left: 0">
+              <div class="select-wp">
+                <select v-model="stockData.plant">
+                  <option :value="plant.platCode" v-for="plant in plants">
+                    {{plant.platName}}
+                  </option>
+                </select>
+              </div>
+            </flexbox-item>
+          </flexbox>
+        </div>
+        <x-input type="text" placeholder="请输入" v-model="stockData.remind_time" :show-clear="false">
+          <div slot="label" class="custom-label"><b>*</b>提醒周期:</div>
+          <span slot="right">分钟</span>
+        </x-input>
+        <x-textarea v-model="stockData.remark" :max="200">
+          <div slot="label" class="custom-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:</div>
+        </x-textarea>
+        <x-switch title="&nbsp;&nbsp;是否提醒:" v-model="stockData.isRemind"></x-switch>
+        <div class="fixed-bottom">
+          <x-button type="warn" @click.native="save()">保存</x-button>
+        </div>
       </div>
       <div v-transfer-dom>
         <confirm v-model="confirmSaveData.confirmIsShow" :title="confirmSaveData.title" @on-confirm="saveConfirm()">
@@ -114,6 +116,11 @@
 
 <style lang="less" scoped>
   @import '~vux/src/styles/1px.less';
+  .scroll-page {
+    height: 100%;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling : touch;
+  }
   select {
     border: none;
     width: 100%;

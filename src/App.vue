@@ -29,6 +29,7 @@ body, html {
   color: #2c3e50;
   background: #fff;
   height: 100%;
+  -webkit-overflow-scrolling : touch;
 }
 .load-more {
   padding: 15px 0;
