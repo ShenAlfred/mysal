@@ -620,12 +620,13 @@
           that.stockData.remind_time = result.period;
           that.isSelected = true;
           that.query["id"] = result.id;
+          that.query["corpId"] = result.corpId;
           that.corpId = result.id;
         });
       }else {
         this.isEdit = false;
       }
-      if(this.isEdit) {             //判断编辑页面默认已取到数据 不显示loading
+      if(this.isEdit) {                                             //判断编辑页面默认已取到数据 不显示loading
         this.isGetData = true;
       }
     },
